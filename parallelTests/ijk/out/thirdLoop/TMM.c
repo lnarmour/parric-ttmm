@@ -100,26 +100,31 @@ inline double __min_double(double x, double y){
 	return ((x)>(y) ? (y) : (x));
 }
 
+float *** Rpool;
 int N;
+struct loopData{
+    int i,j;
+    int tile_size1, tile_size2;
+    float **R;
+};
 
-float ** initialize_R ( ){
-    float * temp = malloc(sizeof(float)*(N+1)*(N+1));
-    float ** new_R = malloc(sizeof(float*)*(N+1));
-    for(int i = 0; i < N+1; i++){
-        new_R[i]=temp+(N+1)*i;
-        for(int j = 0; j < N+1; j++){
-            temp[i*(N+1)+j] = 0;
-        }
-    }
+loopData_t create_loopdata(float** R){
+    loopData_t returnme;
+    returnme.R=R;
+    return returnme;
+}
+typedef struct loopData loopData_t;
+
+loopData_t initialize_R ( ){
+    loopData_t new_R;
+    new_R.R=Rpool[omp_get_thread_num()];
     return new_R;
 }
 
-void combine_R( float ** omp_in, float ** omp_out){
-    for (int i = 0; i <= N; i++)
-        for (int j = i; j <= N; j++)
-            omp_out[i][j] += omp_in[i][j];
-    free(omp_in[0]);
-    free(omp_in);
+void combine_R( loopData_t omp_in, loopData_t omp_out){
+    for (int i = omp_in.i; i <= min(N,omp_in.i+omp_in.tile_size1) ; i++)
+        for (int j = omp_in.j; min(N,opm_in.j+omp_in.tile_size2) ; j++)
+            omp_out.R[i][j] += omp_in.R[i][j];
 }
 
 
@@ -132,6 +137,14 @@ void combine_R( float ** omp_in, float ** omp_out){
 
 void TMM(long Nnew, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, float** R){
 	omp_set_num_threads(6);
+    Rpool=malloc(sizeof(float**)*omp_get_num_threads());
+    for(int i=0;i<omp_get_num_threads();i++){
+        float *newR=(float*)calloc((N+1)*(N+1),sizeof(float));
+        Rpool[i]=(float**)malloc(sizeof(float*)*(N+1));
+        for(int j=0;j<=N;j++)
+            Rpool[i][j]=newR+(j*(N+1));
+    }
+    
 	///Parameter checking
     N=Nnew;
 	if (!((N >= 1 && ts1_l1 > 0 && ts2_l1 > 0 && ts3_l1 > 0))) {
@@ -160,6 +173,14 @@ void TMM(long Nnew, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B,
                 #pragma omp parallel for reduction(+:R)
 		 	 	for(ti3_l1=(ceild((ti1_l1-ts3_l1+1),(ts3_l1))) * (ts3_l1);ti3_l1 <= max(ti1_l1+ts1_l1-1,max(ti2_l1+ts2_l1-1,N));ti3_l1+=ts3_l1)
 		 	 	 {
+                     loopData_t r_struct=create_loopdata(R);
+                     r_struct.i=ti1_l1;
+                     r_struct.j=ti2_l2;
+                     r_struct.tile_size1=ts1_l1;
+                     r_struct.tile_size2=ts2_l1;
+
+                     //zero out a tile
+                     
 		 	 	 	{
 		 	 	 		for(c1=max(ti1_l1,1);c1 <= min(ti1_l1+ts1_l1-1,N-2);c1+=1)
 		 	 	 		 {

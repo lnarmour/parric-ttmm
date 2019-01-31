@@ -163,14 +163,14 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
     
 	{
 		for(int i=0;i<new_sizeA/SIZE;i++)
-            for(int j=i;j<new_sizeB/SIZE;j++)
+            for(int k=i;k<new_sizeB/SIZE;k++)
 #ifdef FIXED_SIZE_INTERIOR
 
 #pragma omp declare reduction (+ : float* : combineC(omp_in, omp_out)) initializer omp_priv= initC();
 
 #pragma omp parallel for reduction(+:cblock)
 #endif
-                for(int k=i;k<=j;k++)
+                for(int j=k;j<=new_sizeB/SIZE;j++)
     #ifdef FIXED_SIZE_INTERIOR
                 {
                     float * cblock=bmC+(i*SIZE*new_sizeC+j*SIZE*SIZE);

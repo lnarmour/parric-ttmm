@@ -1,0 +1,10 @@
+export PATH=${PATH}:/s/parsons/l/sys/intel/compilers_and_libraries_2018.0.128/linux/bin/intel64/
+see also:  https://software.intel.com/en-us/articles/step-by-step-optimizing-with-intel-c-compiler
+note: this doesn't help much, b/c like gcc it doesn't actually support the vec report command (at least this one has the decency to *tell* you that when you try, though...)
+you need to add 
+#ifdef __INTEL_COMPILER
+typedef __float128 _Float128;
+#endif
+before 
+#include <math.h> 
+if you want it to compile anything.
