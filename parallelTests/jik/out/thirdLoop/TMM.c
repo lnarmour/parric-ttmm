@@ -104,6 +104,27 @@ inline double __min_double(double x, double y){
 
 
 
+int N;
+
+float ** initialize_R ( ){
+    float * temp = malloc(sizeof(float)*(N+1)*(N+1));
+    float ** new_R = malloc(sizeof(float*)*(N+1));
+    for(int i = 0; i < N+1; i++){
+        new_R[i]=temp+(N+1)*i;
+        for(int j = 0; j < N+1; j++){
+            temp[i*(N+1)+j] = 0;
+        }
+    }
+    return new_R;
+}
+
+void combine_R( float ** omp_in, float ** omp_out){
+    for (int i = 0; i <= N; i++)
+        for (int j = i; j <= N; j++)
+            omp_out[i][j] += omp_in[i][j];
+    free(omp_in[0]);
+    free(omp_in);
+}
 
 
 //Memory Macros
@@ -111,7 +132,8 @@ inline double __min_double(double x, double y){
 #define B(i,j) B[i][j]
 #define R(i,j) R[i][j]
 
-void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, float** R){
+void TMM(long newN, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, float** R){
+	N=newN;
 	omp_set_num_threads(6);
 	///Parameter checking
 	if (!((N >= 1 && ts1_l1 > 0 && ts2_l1 > 0 && ts3_l1 > 0))) {
@@ -134,7 +156,11 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
 		 {
 		 	for(ti2_l1=(ceild((-ts2_l1+2),(ts2_l1))) * (ts2_l1);ti2_l1 <= N;ti2_l1+=ts2_l1)
 		 	 {
-				#pragma omp parallel for
+				#pragma omp declare reduction (+:\
+                 float** : combine_R(omp_in,omp_out) ) \
+                initializer (omp_priv = initialize_R())
+
+                #pragma omp parallel for reduction(+:R)
 		 	 	for(ti3_l1=(ceild((min(ti1_l1,min(1,ti2_l1)) + -ts3_l1+1),(ts3_l1))) * (ts3_l1);ti3_l1 <= max(N,max(ti1_l1+ts1_l1-1,1));ti3_l1+=ts3_l1)
 		 	 	 {
 		 	 	 	{

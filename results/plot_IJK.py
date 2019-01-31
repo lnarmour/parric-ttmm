@@ -25,13 +25,18 @@ class Result:
             return False
         else:
             return True
+    def gflops_s(self):
+        return self.gflops/self.time
 
 
 def load_results(args):
-    results = []
     # parse raw results from file
     file_name = args['file_path']
     f=open(file_name,"r")
+    return get_results_from_file(f)
+
+def get_results_from_file(f):
+    results = []
     for line in f:
         if not line.startswith('Result'):
             continue
@@ -49,16 +54,16 @@ def avg_results(all_results):
     results = {}
     for r in all_results:
         if r not in results:
-            results[r] = [r.time]
+            results[r] =r
+            results[r].time=[results[r].time]
         else:
-            results[r].append(r.time) 
+            results[r].time.append(r.time) 
 
-    avgs = {}
     for r in results:
-        times = np.sort(results[r])
+        times = np.sort(results[r].time)
         avg = np.mean(times[1:-1])
-        avgs[r] = avg
-    return avgs
+        results[r].time = avg
+    return results
 
 
 def main(args, all_results):
