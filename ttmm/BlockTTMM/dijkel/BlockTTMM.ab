@@ -1,0 +1,9 @@
+affine BlockTTMM {n, b|(n, b)>0}
+input
+	float A, B {i, j, k, l | 0<=i<=j<n && 0<=(k,l)<b};
+output
+	float C {i, j, k, l | 0<=i<=j<n && 0<=(k,l)<b};
+local // No local variables
+let
+   C[i,j,k,l]      = reduce(+, [d,e], A[i,d,k,e]*B[d,j,e,l]);
+.
