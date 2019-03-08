@@ -217,9 +217,10 @@ def worker2(machine, tasks, results):
         echo_pipe = subprocess.Popen(['echo', str(command)], stdout=subprocess.PIPE)
         ssh_pipe = subprocess.Popen(['ssh', '-T', str(machine.hostname)], stdin=echo_pipe.stdout, stdout=subprocess.PIPE)
         result_bytes = ssh_pipe.stdout.read()  # b'Execution time : 0.062362 sec.\n'
-        #print('@@@@@@>', ['echo', str(command)])
-        #print('######>', ['ssh', '-T', str(machine.hostname)])
-        #print('------>', result_bytes.decode('utf-8').split('\n')[-1])
+        #print('@@@@@@>', ['echo', str(command)], '<@@@@')
+        #print('======>', ['ssh', '-T', str(machine.hostname)], '<====')
+        #print('------>', result_bytes.decode('utf-8')) #.split('\n')[-1])
+        #print('######>', result_bytes.decode('utf-8').split('\n')[-1])
         time = float(result_bytes.decode('utf-8').split('\n')[-2].split(' ')[3])
         result = Result(machine, -1, command, time, -1, command.params[0])
         if not command in results:
