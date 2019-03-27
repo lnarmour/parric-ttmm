@@ -12,7 +12,11 @@
 #include <omp.h>
 #include <immintrin.h>
 #include <malloc.h>
+#ifdef FIXED_SIZE_INTERIOR
+void blockmult(const float* a, const float* b, float* c);
+#else
 #include <mkl.h>
+#endif
 #include "blockformat.h"
 #include <string.h>
 
@@ -102,7 +106,20 @@ inline double __min_double(double x, double y){
 	return ((x)>(y) ? (y) : (x));
 }
 
-
+#ifdef FIXED_SIZE_INTERIOR
+void combineC(float *omp_in, float *omp_out){
+    for(int i=0;i<SIZE;i++)
+        for(int j=0;j<SIZE;j++){
+            omp_out[i*SIZE+j]+=omp_in[i*SIZE+j];
+            omp_in[i*SIZE+j]=0;
+        }
+}
+float **blockpool;
+float* initC(){
+    float* block= blockpool[omp_get_thread_num()];        
+    return block;
+}
+#endif
 
 
 
@@ -121,6 +138,15 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
         memset(R[0], 0, sizeof(float)*(N+1)*(N+1));
 	//Memory Allocation
 	
+#ifdef FIXED_SIZE_INTERIOR
+        //initialize blockpool
+        int num_threads=omp_get_num_threads();
+        blockpool=(float**) malloc(sizeof(float*) * num_threads);
+        for (int i=0;i<num_threads;i++)
+            blockpool[i]=(float*) calloc(SIZE*SIZE, sizeof(float));
+        
+#endif
+
 	#define S1(i,j,k) R(i,k) = (A(i,j))*(B(j,k))
 	#define S2(i,j,k) R(i,k) = (R(i,k))+((A(i,j))*(B(j,k)))
 	#define S0(i,j,i2) R(i,i2) = R(i,i2)
@@ -138,11 +164,20 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
 	{
 		for(int i=0;i<new_sizeA/SIZE;i++)
             for(int j=i;j<new_sizeB/SIZE;j++)
+#ifdef FIXED_SIZE_INTERIOR
+
+#pragma omp declare reduction (+ : float* : combineC(omp_in, omp_out)) initializer omp_priv= initC();
+
+#pragma omp parallel for reduction(+:cblock)
+#endif
                 for(int k=i;k<=j;k++)
     #ifdef FIXED_SIZE_INTERIOR
-                    blockmult(bmA+(i*SIZE*new_sizeA+k*SIZE),bmB+(k*SIZE*new_sizeB+j*SIZE),bmC+(i*SIZE*new_sizeC+j*SIZE));
+                {
+                    float * cblock=bmC+(i*SIZE*new_sizeC+j*SIZE*SIZE);
+                    blockmult(bmA+(i*SIZE*new_sizeA+k*SIZE*SIZE),bmB+(k*SIZE*new_sizeB+j*SIZE*SIZE),cblock);
+                }
     #else
-                    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, SIZE, SIZE, SIZE, 1, bmA+(i*SIZE*new_sizeA+k*SIZE), SIZE, bmB+(k*SIZE*new_sizeB+j*SIZE), SIZE, 1, bmC+(i*SIZE*new_sizeC+j*SIZE), SIZE);
+                    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, SIZE, SIZE, SIZE, 1, bmA+(i*SIZE*new_sizeA+k*SIZE*SIZE), SIZE, bmB+(k*SIZE*new_sizeB+j*SIZE*SIZE), SIZE, 1, bmC+(i*SIZE*new_sizeC+j*SIZE*SIZE), SIZE);
     #endif       
 	}
 	#undef S1
@@ -151,6 +186,9 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
     //copy from bmC to R
     fromBlocks(bmC, flatC, new_sizeC, N+1);
 	//Memory Free
+    free(bmC);
+    free(bmB);
+    free(bmA);
 }
 
 //Memory Macros

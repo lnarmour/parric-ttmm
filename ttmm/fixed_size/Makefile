@@ -4,26 +4,24 @@ SIZE=10
 N=5000
 CC=gcc
 
-TMM:TMM-wrapper.c TMM.c blockformat.c
-	$(CC) $^ -o $@$(N)-$(SIZE) -O3 $(MKL_FLAGS) -DSIZE=$(SIZE)
+D%:TMM-wrapper.c TMM.c blockformat.c blockmult.c
+	$(CC) $^ -o $@ -O3 $(MKL_FLAGS) -DSIZE=$(SIZE) $(EXTRA_FLAGS)
 
-check: TMM-wrapper.c TMM.o blockformat.o
-	$(CC) $^ -o TMM.check -O3 $(MKL_FLAGS) -DCHECKING
+check: TMM-wrapper.c TMM.o blockformat.o blockmult.c
+	$(CC) $^ -o TMM.check -O3 $(MKL_FLAGS) -DCHECKING -DSIZE=$(SIZE)
 
 correctness: clean
 	g++ blockformat.c -c  -DSIZE=$(SIZE) -O3 -o blockformat.o -Wfatal-errors
 	g++ TMM.c -o TMM.o -O3 $(MKL_FLAGS) -DSIZE=$(SIZE) -c
 	g++ testStuff.cpp -o TMM.check TMM.o blockformat.o $(MKL_FLAGS) -DCHECKING
 TMM.o:TMM.c
-	$(CC) $^ -o $@ -O3 $(MKL_FLAGS) -DSIZE=$(SIZE) -c
+	$(CC) $^ -o $@ -O3 $(MKL_FLAGS) -DSIZE=$(SIZE) $(EXTRA_FLAGS) -c
 
-runTMM: TMM 
-	$$(./mkl_setup.sh) ; \
-	./TMM$(N)-$(SIZE) $(N) $(N) $(N) $(N)
 
-run%: %
+runTMM:  D$(SIZE) 
 	$$(./mkl_setup.sh) ; \
 	./$< $(N) $(N) $(N) $(N)
+
 
 runcheck: check
 	$$(./mkl_setup.sh) ; \
@@ -38,4 +36,4 @@ blockformat.o: blockformat.c
 blockmult.o: blockmult.c
 	$(CC) $< -c -DSIZE=$(SIZE) -O3 -o $@ -Wfatal-errors
 clean:
-	rm -f ./*.o TMM
+	rm -f ./*.o TMM D*

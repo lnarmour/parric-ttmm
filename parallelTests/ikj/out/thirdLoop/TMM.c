@@ -177,6 +177,7 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
 				 {
 				 	for(ti2_l1=(ceild((N-ts2_l1+0),(ts2_l1))) * (ts2_l1);ti2_l1 <= N;ti2_l1+=ts2_l1)
 				 	 {
+                         #pragma omp parallel for
 				 	 	for(ti3_l1=(ceild((N-ts3_l1+0),(ts3_l1))) * (ts3_l1);ti3_l1 <= N;ti3_l1+=ts3_l1)
 				 	 	 {
 				 	 	 	{
@@ -212,6 +213,7 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
 		 {
 		 	for(ti2_l1=(ceild((N-ts2_l1+1),(ts2_l1))) * (ts2_l1);ti2_l1 <= N;ti2_l1+=ts2_l1)
 		 	 {
+                 #pragma omp parallel for
 		 	 	for(ti3_l1=(ceild((N-ts3_l1+1),(ts3_l1))) * (ts3_l1);ti3_l1 <= N;ti3_l1+=ts3_l1)
 		 	 	 {
 		 	 	 	{
