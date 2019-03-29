@@ -10,7 +10,7 @@ class Result:
         self.N = N
         self.t1 = t1
         sideLen=N*t1
-        self.gflops = sideLen*sideLen*sideLen*(1.0/3.0)*(10**-9)
+        self.gflops = sideLen*sideLen*sideLen*(1.0/6.0)*(10**-9)
         self.time = time
 
     def __str__(self):

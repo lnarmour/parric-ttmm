@@ -11,7 +11,7 @@ class Result:
         self.t1 = t1
         self.t2 = t2
         self.t3 = t3
-        self.gflops = N*N*N*(1.0/3.0)*(10**-9)
+        self.gflops = N*N*N*(1.0/6.0)*(10**-9)
         self.time = time
 
     def __str__(self):
