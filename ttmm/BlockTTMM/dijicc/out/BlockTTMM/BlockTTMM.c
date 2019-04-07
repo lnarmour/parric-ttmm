@@ -132,21 +132,17 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 			{
 				for(c3=0;c3 <= n-1;c3+=1)
 				 {
-				 	 //mkl call here!
-                    cblas_sgemm(CblasRowMajor, //storage format: row major
-                                CblasNoTrans, //use A, not A transpose
-                                CblasNoTrans, //Use B, not B transpose
-                                b, //rows in A
-                                b, //columns in B
-                                b, //columns in A/rows in B
-                                1, //multiply A by 1
-                                *(A[0][0]), //A (assumes flat layout). In our case, this is the block at A[j][i]
-                                b, //leading dimension of A
-                                *(B[0][c3]), //B (assumes flat layout). In our case, this is the block at B[i][d]
-                                b, //leading dimension of B
-                                1, //multiply C by this before adding AB
-                                *(C[0][c3]), //C (assumes flat layout). In our case, this is the block at C[j][d]
-                                b);//leading dimension of C
+           for(c4=0;c4 <= b-1;c4+=1)
+				 	 {
+				 	 	for(c5=0;c5 <= b-1;c5+=1)
+				 	 	 {
+				 	 	 	S1((0),(0),(c3),(c4),(c5),(0));
+				 	 	 	for(c6=0;c6 <= b-1;c6+=1)
+				 	 	 	 {
+				 	 	 	 	S0((0),(0),(c3),(c4),(c5),(c6));
+				 	 	 	 }
+				 	 	 }
+				 	 }
 				 }
 				for(c2=1;c2 <= n-1;c2+=1)
 				 {
