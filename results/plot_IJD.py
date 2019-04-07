@@ -6,22 +6,21 @@ import matplotlib.pyplot as plt
 
 
 class Result:
-    def __init__(self, N, t1, t2, t3, time):
+    def __init__(self, N, t1, time):
         self.N = N
         self.t1 = t1
-        self.t2 = t2
-        self.t3 = t3
-        self.gflops = N*N*N*(1.0/6.0)*(10**-9)
+        sideLen=N*t1
+            self.gflops = sideLen*sideLen*sideLen*(1.0/3.0)*(10**-9)
         self.time = time
 
     def __str__(self):
-        return 'N={}, TS=({},{},{}), time={}'.format(self.N, self.t1, self.t2, self.t3, self.time)
+        return 'N={}, T=({}), time={}'.format(self.N, self.t1, self.time)
 
     def __hash__(self):
-        return hash('{}-{}-{}-{}'.format(self.N, self.t1, self.t2, self.t3))
+        return hash('{}-{}'.format(self.N, self.t1))
 
     def __eq__(self, other):
-        if (self.N != other.N) or (self.t1 != other.t1) or (self.t2 != other.t2) or (self.t3 != other.t3):
+        if (self.N != other.N) or (self.t1 != other.t1):
             return False
         else:
             return True
@@ -43,10 +42,10 @@ def get_results_from_file(f):
         line = line.replace(' ','')
         pcs = line.split(':')
         N = int(pcs[1].split('=')[1])
-        TS = pcs[2].replace('(','').replace(')','').split(',')
-        ts1, ts2, ts3 = int(TS[0]), int(TS[1]), int(TS[2])
+        TS = pcs[2].replace('(','').replace(')','').split(',')[0]
+        ts1= int(TS)
         time = float(pcs[3].split('s')[0])
-        results.append(Result(N, ts1, ts2, ts3, time))
+        results.append(Result(N, ts1, time))
     return results
 
 
