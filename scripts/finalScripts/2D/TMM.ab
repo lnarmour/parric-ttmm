@@ -1,0 +1,12 @@
+
+affine TMM {N|N>0}   //Parameter N will be used to define the size of the matrices which is unknown till runtime
+input
+	float A {i,j|1<=j<=N && 1<=i<=j}; //the A matrix is given
+	float B {i,j|1<=j<=N && 1<=i<=j};
+
+output
+	float R {i,j|1<=j<=N && 1<=i<=j}; 
+
+let		//ashow syntax 
+	R[i,j] = reduce(+, [k], A[i,k]*B[k,j]);
+.
