@@ -5,8 +5,11 @@ do
     cd "${x}";
     printf "Generating for ${x}...";
     ./compile.sh TMMScript.cs &> /dev/null;
+    printf "making...";
+    cd out;
+    make &> /dev/null;
     printf "done.\n";
-    cd ../../;
+    cd ../../../;
 done;
 
 for x in ./tiled/*/;
@@ -14,6 +17,9 @@ do
     cd "${x}";
     printf "Generating for ${x}...";
     ./compile.sh TMMScript.cs &> /dev/null;
+    printf "making...";
+    cd out;
+    make &> /dev/null;
     printf "done.\n";
-    cd ../../;
+    cd ../../../;
 done;
