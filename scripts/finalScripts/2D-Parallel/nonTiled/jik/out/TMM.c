@@ -133,8 +133,14 @@ void TMM(long N, float** A, float** B, float** R){
 		 {
 		 	S0((1),(N),(c3));
 		 }
+		#ifdef PARALLEL_J
+		#pragma omp parallel for
+		#endif
 		for(c1=2;c1 <= N;c1+=1)
 		 {
+		    #ifdef PARALLEL_I
+		    #pragma omp parallel for
+		    #endif
 		 	for(c2=1;c2 <= c1-1;c2+=1)
 		 	 {
 		 	 	S1((c1),(c2),(c2));
