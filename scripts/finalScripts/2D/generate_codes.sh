@@ -3,11 +3,9 @@
 for x in ./nonTiled/*/;
 do
     cd "${x}";
-    printf "Generating for ${x}...";
-    ./compile.sh TMMScript.cs &> /dev/null;
-    printf "making...";
+    printf "cleaning for ${x}...";
     cd out;
-    make &> /dev/null;
+    clean &> /dev/null;
     printf "done.\n";
     cd ../../../;
 done;
