@@ -130,8 +130,14 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
 		int ti1_l1,ti2_l1,ti3_l1,c1,c2,c3;
 		for(ti1_l1=(ceild((-ts1_l1+2),(ts1_l1))) * (ts1_l1);ti1_l1 <= N;ti1_l1+=ts1_l1)
 		 {
+             #ifdef PARALLEL_J
+            #pragma omp parallel for
+            #endif
 		 	for(ti2_l1=(ceild((min(1,ti1_l1) + -ts2_l1+1),(ts2_l1))) * (ts2_l1);ti2_l1 <= N;ti2_l1+=ts2_l1)
 		 	 {
+		 	    #ifdef PARALLEL_I
+                #pragma omp parallel for
+                #endif
 		 	 	for(ti3_l1=(ceild((min(1,ti1_l1) + -ts3_l1+1),(ts3_l1))) * (ts3_l1);ti3_l1 <= max(N,max(1,ti1_l1+ts1_l1-1));ti3_l1+=ts3_l1)
 		 	 	 {
 		 	 	 	{

@@ -128,8 +128,14 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
 		//{i,j,k|i>=1 && N>=j && j>=k && k>=i+1 && k>=2 && N>=k && j>=i && j>=1 && N>=1}
 		//{i,j,i2|j==N && i2>=1 && N>=i2 && i>=1 && i2>=i && N>=1}
 		int ti1_l1,ti2_l1,ti3_l1,c1,c2,c3;
+		#ifdef PARALLEL_I
+		#pragma omp parallel for
+		#endif
 		for(ti1_l1=(ceild((-ts1_l1+2),(ts1_l1))) * (ts1_l1);ti1_l1 <= N-2;ti1_l1+=ts1_l1)
 		 {
+		    #ifdef PARALLEL_J
+		    #pragma omp parallel for
+		    #endif
 		 	for(ti2_l1=(ceild((ti1_l1-ts2_l1+1),(ts2_l1))) * (ts2_l1);ti2_l1 <= N;ti2_l1+=ts2_l1)
 		 	 {
 		 	 	for(ti3_l1=(ceild((ti1_l1-ts3_l1+1),(ts3_l1))) * (ts3_l1);ti3_l1 <= max(ti1_l1+ts1_l1-1,max(ti2_l1+ts2_l1-1,N));ti3_l1+=ts3_l1)
@@ -178,8 +184,14 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
 		 }
 		if ((N >= 2)) {
 			{
+			    #ifdef PARALLEL_I
+		        #pragma omp parallel for
+		        #endif
 				for(ti1_l1=(ceild((N-ts1_l1+0),(ts1_l1))) * (ts1_l1);ti1_l1 <= N-1;ti1_l1+=ts1_l1)
 				 {
+				    #ifdef PARALLEL_J
+		            #pragma omp parallel for
+		            #endif
 				 	for(ti2_l1=(ceild((N-ts2_l1+0),(ts2_l1))) * (ts2_l1);ti2_l1 <= N;ti2_l1+=ts2_l1)
 				 	 {
 				 	 	for(ti3_l1=(ceild((N-ts3_l1+0),(ts3_l1))) * (ts3_l1);ti3_l1 <= max(N-1,N);ti3_l1+=ts3_l1)
@@ -217,8 +229,14 @@ void TMM(long N, long ts1_l1, long ts2_l1, long ts3_l1, float** A, float** B, fl
 				 }
 			}
 		}
+		#ifdef PARALLEL_I
+		#pragma omp parallel for
+		#endif
 		for(ti1_l1=(ceild((N-ts1_l1+1),(ts1_l1))) * (ts1_l1);ti1_l1 <= N;ti1_l1+=ts1_l1)
 		 {
+		    #ifdef PARALLEL_J
+		    #pragma omp parallel for
+		    #endif
 		 	for(ti2_l1=(ceild((N-ts2_l1+1),(ts2_l1))) * (ts2_l1);ti2_l1 <= N;ti2_l1+=ts2_l1)
 		 	 {
 		 	 	for(ti3_l1=(ceild((N-ts3_l1+1),(ts3_l1))) * (ts3_l1);ti3_l1 <= N;ti3_l1+=ts3_l1)
