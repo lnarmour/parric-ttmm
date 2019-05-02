@@ -1,4 +1,5 @@
 #!/bin/bash
+# Return to commit 80fe70e51f4a9d00255958ba0f4894f6170f5962  if you accidentally overwrite hard coded pragmas
 
 for x in ./nonTiled/*/;
 do
