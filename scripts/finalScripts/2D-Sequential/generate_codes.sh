@@ -7,7 +7,7 @@ do
     ./compile.sh TMMScript.cs &> /dev/null;
     printf "making...";
     cd out;
-    make &> /dev/null;
+    make CC=icc &> /dev/null;
     printf "done.\n";
     cd ../../../;
 done;
@@ -19,7 +19,7 @@ do
     ./compile.sh TMMScript.cs &> /dev/null;
     printf "making...";
     cd out;
-    make &> /dev/null;
+    make CC=icc &> /dev/null;
     printf "done.\n";
     cd ../../../;
 done;

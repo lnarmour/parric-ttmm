@@ -5,4 +5,8 @@
 *.verify-rand
 *.check
 *.glog
+*TMM_parallel_I
+*TMM_parallel_J
+
+
 *swp
