@@ -56,13 +56,10 @@ class Command:
 
 
 class Result:
-    def __init__(self, machine, core, command, time, level, parent):
+    def __init__(self, machine, command, time):
         self.machine = machine
-        self.core = core
         self.command = command
         self.time = time
-        self.level = level
-        self.parent = parent
 
     def __str__(self):
         ret = 'Result [' + str(self.time) + ' seconds'
@@ -75,7 +72,7 @@ class Result:
         return self.time > other.time
 
 
-def worker(machine, core, tasks, level, results, parent):
+def worker(machine, tasks, results):
     while True:
         command = tasks.get()
         if not command:
@@ -86,7 +83,7 @@ def worker(machine, core, tasks, level, results, parent):
         ssh_pipe = subprocess.Popen(['ssh', '-T', str(machine.hostname)], stdin=echo_pipe.stdout, stdout=subprocess.PIPE)
         result_bytes = ssh_pipe.stdout.read()  # b'Execution time : 0.062362 sec.\n'
         time = float(result_bytes.decode('utf-8').split(' ')[3])
-        result = Result(machine, core, command, time, level, parent)
+        result = Result(machine, command, time)
         if not command in results:
             results[command]=[]
         results[command].append(result)
@@ -96,10 +93,10 @@ def worker(machine, core, tasks, level, results, parent):
         tasks.task_done()
 
 
-def run_workers(machines, tasks, level, results, parent):
+def run_workers(machines, tasks, results):
     threads = []
     for machine in machines:
-        t = threading.Thread(target=worker, args=(machine, i, tasks, level, results, parent))
+        t = threading.Thread(target=worker, args=(machine, tasks, results))
         t.start()
         threads.append(t)
     tasks.join()
@@ -120,7 +117,7 @@ def init_machines(hostnames):
         print('done.')
 
 
-def load_config(filename, path_prefix='.'):
+def queue_tasks(filename, path_prefix='.'):
     global hostnames
 
     with open(filename) as f:
@@ -165,7 +162,7 @@ def main():
     parser.add_argument('-f', '--config-file', default=None)
     args = vars(parser.parse_args())
 
-    tasks = load_config(args['config_file'])
+    tasks = queue_tasks(args['config_file'])
     for t in list(tasks.queue):
         print(t)
 
