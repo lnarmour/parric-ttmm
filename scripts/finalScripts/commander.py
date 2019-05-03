@@ -140,7 +140,7 @@ def queue_tasks(filename, path_prefix='.'):
                 binary = '{}/2D-Sequential/tiled/{}/TMM'.format(path_prefix, permutation)
                 tasks.put(Command(binary, [N, TS, TS, TS]))
 
-                for num_threads in range(1, 7):
+                for num_threads in data['omp_num_threads']:
                     binaryI = '{}/2D-Parallel/nonTiled/{}/TMM_parallel_I'.format(path_prefix, permutation)
                     binaryJ = '{}/2D-Parallel/nonTiled/{}/TMM_parallel_J'.format(path_prefix, permutation)
                     tasks.put(Command(binaryI, [N], num_threads=num_threads))
@@ -158,17 +158,19 @@ def main():
 
     # parse command line arguments
     parser = argparse.ArgumentParser(prog=program_name)
-    parser.add_argument('--path-prefix', '--path-prefix', help='Path to directory containing TMM executable file', default='./workspace/parric-ttmm/ttmm/alphaz_stuff/out')
+    parser.add_argument('--path-prefix', '--path-prefix', help='String to prepend to >path-prefix>/2D-*/*iled/*/TMM*', default='./workspace/parric-ttmm/ttmm/alphaz_stuff/out')
     parser.add_argument('-f', '--config-file', default=None)
     args = vars(parser.parse_args())
 
-    tasks = queue_tasks(args['config_file'])
-    for t in list(tasks.queue):
-        print(t)
+    tasks = queue_tasks(args['config_file'], args['path_prefix'])
 
     results = {}
 
-    #run_workers(machines, tasks, results)
+    if os.getenv("COLLECT"):
+        run_workers(machines, tasks, results)
+    else:
+        for t in list(tasks.queue):
+            print(t)
 
     # print results
     for result in results:
