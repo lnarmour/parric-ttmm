@@ -225,8 +225,10 @@ def main():
 
     # print results
     print('--------------------')
-    for r in results:
-        print(r.serialize())
+    all_results = [r.serialize for r in results]
+
+    # TODO - json dump all_results to file
+    
     print('...done.')
 
 
