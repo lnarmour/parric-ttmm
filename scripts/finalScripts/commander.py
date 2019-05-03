@@ -211,6 +211,7 @@ def main():
     parser = argparse.ArgumentParser(prog=program_name)
     parser.add_argument('--path-prefix', '--path-prefix', help='String to prepend to >path-prefix>/2D-*/*iled/*/TMM*', default='./workspace/parric-ttmm/ttmm/alphaz_stuff/out')
     parser.add_argument('-f', '--config-file', default=None)
+    parser.add_argument('-o', '--out-file', default='./results.json')
     args = vars(parser.parse_args())
 
     tasks = queue_tasks(args['config_file'], args['path_prefix'])
@@ -228,7 +229,9 @@ def main():
     all_results = [r.serialize for r in results]
 
     # TODO - json dump all_results to file
-    
+    with open(args['out_file'], 'w') as outfile:
+        json.dump(all_results, outfile)
+
     print('...done.')
 
 
