@@ -35,6 +35,7 @@ class Command:
         self.TS = params[1] if len(params)==4 else None
         self.tiled = True if self.TS else False
         self.num_runs = num_runs
+        self.parallel = True if num_threads else False
         self.num_threads = num_threads
         self.permutation = permutation
 
@@ -80,20 +81,22 @@ class Result:
         self.error = error
         self.error_msg = error_msg
 
-    def jsonify(self):
+
+    def serialize(self):
         # TODO - haven't fully tested
-        ret = '{'
-        ret += '"command":"{}",'.format(self.command)
-        ret += '"host":"{}",'.format(self.machine)
-        ret += '"permutation":"{}",'.format(self.command.permutation)
-        ret += '"N":{},'.format(self.command.N)
-        ret += '"tiled":{},'.format(self.command.tiled)
-        ret += '"TS":{},'.format(self.command.TS)
-        ret += '"error":{},'.format(self.error)
-        ret += '"error_msg":"{}",'.format(self.error_msg)
-        ret += '"times":{}'.format(self.times)
-        ret += '}'
+        ret = {}
+        ret["command"] = self.command
+        ret["permutation"] = self.command.permutation
+        ret["N"] = self.command.N
+        ret["tiled"] = self.command.tiled
+        ret["TS"] = self.command.TS
+        ret["parallel"] = self.command.parallel
+        ret["num_threads"] = self.command.num_threads
+        ret["error"] = self.error
+        ret["error_msg"] = self.error_msg
+        ret["times"] = self.times
         return ret
+
 
     def __str__(self):
         ret = 'Result\n'
@@ -103,6 +106,8 @@ class Result:
         ret += '  N: {}\n'.format(self.command.N)
         ret += '  tiled: {}\n'.format(self.command.tiled)
         ret += '  TS: {}\n'.format(self.command.TS)
+        ret += '  parallel: {}\n'.format(self.command.parallel)
+        ret += '  num_threads: {}\n'.format(self.command.num_threads)
         ret += '  error: {}\n'.format(self.error)
         ret += '  error_msg: {}\n'.format(self.error_msg)
         ret += '  times: {}'.format(self.times)
@@ -132,9 +137,7 @@ def worker(machine, tasks, results):
             result = Result(machine, command, None, error=True, error_msg=result_bytes)
         finally:
             tasks.task_done()
-            if not command in results:
-                results[command]=[]
-            results[command].append(result)
+            results.append(result)
             print(result)
 
 
@@ -212,7 +215,7 @@ def main():
 
     tasks = queue_tasks(args['config_file'], args['path_prefix'])
 
-    results = {}
+    results = []
 
     if os.getenv("COLLECT"):
         run_workers(machines, tasks, results)
@@ -222,8 +225,8 @@ def main():
 
     # print results
     print('--------------------')
-    for k in results:
-        print(str(results[k][0].jsonify()))
+    for r in results:
+        print(r.serialize())
     print('...done.')
 
 
