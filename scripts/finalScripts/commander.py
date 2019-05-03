@@ -12,21 +12,31 @@ global machines
 global tasks
 global gflops
 
+global job_cnt
+
 class Machine:
-    def __init__(self, hostname):
+    def __init__(self, hostname, dns_suffix=None):
         self.tasks = []
-        self.hostname = hostname
+        if not dns_suffix:
+            dns_suffix = '.cs.colostate.edu'
+        self.hostname = '{}{}'.format(hostname, dns_suffix)
     
     def __str__(self):
         return str(self.hostname)
 
 
 class Command:
-    def __init__(self, executable, params, num_runs=7, num_threads=None):
+    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None):
         self.executable = executable
+        self.executable_short_name = executable.split('/')[-1]
         self.params = params
+        self.N = params[0]
+        # TODO - will need to adjust this for 4D layouts
+        self.TS = params[1] if len(params)==4 else None
+        self.tiled = True if self.TS else False
         self.num_runs = num_runs
         self.num_threads = num_threads
+        self.permutation = permutation
 
     def __str__(self):
         p_str = ''
@@ -35,34 +45,56 @@ class Command:
         environment_vars = '{}{} '.format('OMP_NUM_THREADS=', self.num_threads) if self.num_threads else ''
         return environment_vars + str(self.executable) + p_str
 
+    def log(self):
+        p_str = ''
+        for p in self.params:
+            p_str += ' ' + str(p)
+        environment_vars = '{}{} '.format('OMP_NUM_THREADS=', self.num_threads) if self.num_threads else ''
+        return environment_vars + str(self.executable_short_name) + p_str
+
     def as_list(self):
         ret = [str(self.executable)]
         for p in self.params:
             ret.append(str(p))
         return ret
-    
+
     def __hash__(self):
         return (self.executable, tuple(self.params)).__hash__()
-    
+
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.executable==other.executable and self.params==other.params
-    
+        return isinstance(other, self.__class__) and self.executable == other.executable and self.params == other.params
+
     def __ne__(self, other):
-        return not self==other
+        return not self == other
 
     def __lt__(self, other):
-        #In case a tuple with a command at the end ties the previous results during a sort
+        # In case a tuple with a command at the end ties the previous results during a sort
         return self.__hash__() < other.__hash__()
 
 
 class Result:
-    def __init__(self, machine, command, time):
+    def __init__(self, machine, command, time, error=False, error_msg=None):
         self.machine = machine
         self.command = command
         self.time = time
+        self.error = error
+        self.error_msg = error_msg
+
+    def jsonify(self):
+        # TODO - build json string for this object
+        pass
 
     def __str__(self):
-        ret = 'Result [' + str(self.time) + ' seconds'
+        ret = 'Result\n'
+        ret += '  command: {}\n'.format(self.command)
+        ret += '  host: {}\n'.format(self.machine)
+        ret += '  permutation: {}\n'.format(self.command.permutation)
+        ret += '  N: {}\n'.format(self.command.N)
+        ret += '  tiled: {}\n'.format(self.command.tiled)
+        ret += '  TS: {}\n'.format(self.command.TS)
+        ret += '  error: {}\n'.format(self.error)
+        ret += '  error_msg: {}\n'.format(self.error_msg)
+        ret += '  time: {}'.format(self.time)
         return ret
 
     def __lt__(self, other):
@@ -73,24 +105,33 @@ class Result:
 
 
 def worker(machine, tasks, results):
+    global job_cnt
     while True:
         command = tasks.get()
         if not command:
             break
 
+        # TODO - to get multiple runs on the same machine:
+        # TODO
+
+        command_string = '{} && '.format(str(command)) * 4 + 'who'
         # remotely invoke 'command' on 'machine' via ssh
-        echo_pipe = subprocess.Popen(['echo', str(command)], stdout=subprocess.PIPE)
-        ssh_pipe = subprocess.Popen(['ssh', '-T', str(machine.hostname)], stdin=echo_pipe.stdout, stdout=subprocess.PIPE)
-        result_bytes = ssh_pipe.stdout.read()  # b'Execution time : 0.062362 sec.\n'
-        time = float(result_bytes.decode('utf-8').split(' ')[3])
-        result = Result(machine, command, time)
-        if not command in results:
-            results[command]=[]
-        results[command].append(result)
-
-        print(str(result))
-
-        tasks.task_done()
+        echo_pipe = subprocess.Popen(['echo', str(command_string)], stdout=subprocess.PIPE)
+        user_at_host = '{}@{}'.format('lnarmour', str(machine.hostname))
+        ssh_pipe = subprocess.Popen(['ssh', '-T', user_at_host], stdin=echo_pipe.stdout, stdout=subprocess.PIPE)
+        result_bytes = ssh_pipe.stdout.read()
+        try:
+            result_str = result_bytes.decode('utf-8').split('\n')[-2]  # b'Execution time : 0.062362 sec.'
+            time = result_str.split(' ')[3]
+            result = Result(machine, command, time)
+        except:
+            result = Result(machine, command, None, error=True, error_msg=result_bytes)
+        finally:
+            tasks.task_done()
+            if not command in results:
+                results[command]=[]
+            results[command].append(result)
+            print(result)
 
 
 def run_workers(machines, tasks, results):
@@ -135,24 +176,27 @@ def queue_tasks(filename, path_prefix='.'):
     for N in data['problem_size']:
         for TS in data['tile_size']:
             for permutation in loop_orders_2D:
-                binary = '{}/2D-Sequential/nonTiled/{}/TMM'.format(path_prefix, permutation)
-                tasks.put(Command(binary, [N]))
-                binary = '{}/2D-Sequential/tiled/{}/TMM'.format(path_prefix, permutation)
-                tasks.put(Command(binary, [N, TS, TS, TS]))
+                binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
+                tasks.put(Command(binary, [N], permutation=permutation))
+                binary = '{}/2D-Sequential/tiled/{}/out/TMM'.format(path_prefix, permutation)
+                tasks.put(Command(binary, [N, TS, TS, TS], permutation=permutation))
 
                 for num_threads in data['omp_num_threads']:
-                    binaryI = '{}/2D-Parallel/nonTiled/{}/TMM_parallel_I'.format(path_prefix, permutation)
-                    binaryJ = '{}/2D-Parallel/nonTiled/{}/TMM_parallel_J'.format(path_prefix, permutation)
-                    tasks.put(Command(binaryI, [N], num_threads=num_threads))
-                    tasks.put(Command(binaryJ, [N], num_threads=num_threads))
-                    binaryI = '{}/2D-Parallel/tiled/{}/TMM_parallel_I'.format(path_prefix, permutation)
-                    binaryJ = '{}/2D-Parallel/tiled/{}/TMM_parallel_J'.format(path_prefix, permutation)
-                    tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads))
-                    tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads))
+                    binaryI = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
+                    binaryJ = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
+                    tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation))
+                    tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation))
+                    binaryI = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
+                    binaryJ = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
+                    tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation))
+                    tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation))
 
     return tasks
 
 def main():
+    global job_cnt
+    job_cnt = 0
+
     '''Command line options processing.'''
     program_name = os.path.basename(sys.argv[0])
 
@@ -173,9 +217,11 @@ def main():
             print(t)
 
     # print results
-    for result in results:
-        print(result)
-    print('...done.')
+    #print('--------------------')
+    #for k in results:
+    #    first_result = results[k][0]
+    #    #print(str(first_result))
+    #print('...done.')
 
 
 if __name__ == '__main__':
