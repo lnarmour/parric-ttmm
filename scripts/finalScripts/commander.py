@@ -111,8 +111,6 @@ def worker(machine, tasks, results):
         echo_pipe = subprocess.Popen(['echo', str(command_string)], stdout=subprocess.PIPE)
         ssh_pipe = subprocess.Popen(['ssh', '-T', str(machine.hostname)], stdin=echo_pipe.stdout, stdout=subprocess.PIPE)
         result_bytes = ssh_pipe.stdout.read()
-        print('##')
-        print(result_bytes)
         try:
             arr = result_bytes.decode('utf-8').split('\n')[:-1]  # b'Execution time : 0.062362 sec.'
             k = -1 * command.num_runs
