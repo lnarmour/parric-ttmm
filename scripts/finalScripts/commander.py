@@ -85,7 +85,7 @@ class Result:
     def serialize(self):
         # TODO - haven't fully tested
         ret = {}
-        ret["command"] = self.command
+        ret["command"] = str(self.command)
         ret["permutation"] = self.command.permutation
         ret["N"] = self.command.N
         ret["tiled"] = self.command.tiled
