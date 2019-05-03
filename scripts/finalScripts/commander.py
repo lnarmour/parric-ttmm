@@ -81,8 +81,19 @@ class Result:
         self.error_msg = error_msg
 
     def jsonify(self):
-        # TODO - build json string for this object
-        pass
+        # TODO - haven't fully tested
+        ret = '{'
+        ret += '"command":"{}",'.format(self.command)
+        ret += '"host":"{}",'.format(self.machine)
+        ret += '"permutation":"{}",'.format(self.command.permutation)
+        ret += '"N":{},'.format(self.command.N)
+        ret += '"tiled":{},'.format(self.command.tiled)
+        ret += '"TS":{},'.format(self.command.TS)
+        ret += '"error":{},'.format(self.error)
+        ret += '"error_msg":"{}"'.format(self.error_msg)
+        ret += '"times":{}'.format(self.times)
+        ret += '}'
+        return ret
 
     def __str__(self):
         ret = 'Result\n'
@@ -210,11 +221,10 @@ def main():
             print(t)
 
     # print results
-    #print('--------------------')
-    #for k in results:
-    #    first_result = results[k][0]
-    #    #print(str(first_result))
-    #print('...done.')
+    print('--------------------')
+    for k in results:
+        print(str(results[k][0].jsonify()))
+    print('...done.')
 
 
 if __name__ == '__main__':
