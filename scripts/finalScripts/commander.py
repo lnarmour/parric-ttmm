@@ -73,10 +73,10 @@ class Command:
 
 
 class Result:
-    def __init__(self, machine, command, time, error=False, error_msg=None):
+    def __init__(self, machine, command, times, error=False, error_msg=None):
         self.machine = machine
         self.command = command
-        self.time = time
+        self.times = times
         self.error = error
         self.error_msg = error_msg
 
@@ -94,14 +94,8 @@ class Result:
         ret += '  TS: {}\n'.format(self.command.TS)
         ret += '  error: {}\n'.format(self.error)
         ret += '  error_msg: {}\n'.format(self.error_msg)
-        ret += '  time: {}'.format(self.time)
+        ret += '  times: {}'.format(self.times)
         return ret
-
-    def __lt__(self, other):
-        return self.time < other.time
-
-    def __gt__(self, other):
-        return self.time > other.time
 
 
 def worker(machine, tasks, results):
@@ -111,21 +105,20 @@ def worker(machine, tasks, results):
         if not command:
             break
 
-        # TODO - to get multiple runs on the same machine:
-        # TODO
-
         command_string = '{} && '.format(str(command)) * (command.num_runs-1)+ str(command)
+
         # remotely invoke 'command' on 'machine' via ssh
         echo_pipe = subprocess.Popen(['echo', str(command_string)], stdout=subprocess.PIPE)
-        user_at_host = '{}@{}'.format('lnarmour', str(machine.hostname))
-        ssh_pipe = subprocess.Popen(['ssh', '-T', user_at_host], stdin=echo_pipe.stdout, stdout=subprocess.PIPE)
+        ssh_pipe = subprocess.Popen(['ssh', '-T', str(machine.hostname)], stdin=echo_pipe.stdout, stdout=subprocess.PIPE)
         result_bytes = ssh_pipe.stdout.read()
         print('##')
         print(result_bytes)
         try:
-            result_str = result_bytes.decode('utf-8').split('\n')[-2]  # b'Execution time : 0.062362 sec.'
-            time = result_str.split(' ')[3]
-            result = Result(machine, command, time)
+            arr = result_bytes.decode('utf-8').split('\n')[:-1]  # b'Execution time : 0.062362 sec.'
+            k = -1 * command.num_runs
+            arr = arr[k:]
+            times = [float(s.split(' ')[3]) for s in arr]
+            result = Result(machine, command, times)
         except:
             result = Result(machine, command, None, error=True, error_msg=result_bytes)
         finally:
