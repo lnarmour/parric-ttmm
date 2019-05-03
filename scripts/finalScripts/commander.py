@@ -114,12 +114,14 @@ def worker(machine, tasks, results):
         # TODO - to get multiple runs on the same machine:
         # TODO
 
-        command_string = '{} && '.format(str(command)) * 4 + 'who'
+        command_string = '{} && '.format(str(command)) * (command.num_runs-1)+ str(command)
         # remotely invoke 'command' on 'machine' via ssh
         echo_pipe = subprocess.Popen(['echo', str(command_string)], stdout=subprocess.PIPE)
         user_at_host = '{}@{}'.format('lnarmour', str(machine.hostname))
         ssh_pipe = subprocess.Popen(['ssh', '-T', user_at_host], stdin=echo_pipe.stdout, stdout=subprocess.PIPE)
         result_bytes = ssh_pipe.stdout.read()
+        print('##')
+        print(result_bytes)
         try:
             result_str = result_bytes.decode('utf-8').split('\n')[-2]  # b'Execution time : 0.062362 sec.'
             time = result_str.split(' ')[3]
