@@ -226,7 +226,7 @@ def main():
 
     # print results
     print('--------------------')
-    all_results = [r.serialize for r in results]
+    all_results = [r.serialize() for r in results]
 
     # TODO - json dump all_results to file
     with open(args['out_file'], 'w') as outfile:
