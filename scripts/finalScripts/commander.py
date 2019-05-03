@@ -90,7 +90,7 @@ class Result:
         ret += '"tiled":{},'.format(self.command.tiled)
         ret += '"TS":{},'.format(self.command.TS)
         ret += '"error":{},'.format(self.error)
-        ret += '"error_msg":"{}"'.format(self.error_msg)
+        ret += '"error_msg":"{}",'.format(self.error_msg)
         ret += '"times":{}'.format(self.times)
         ret += '}'
         return ret
