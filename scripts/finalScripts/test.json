@@ -1,0 +1,14 @@
+{
+  "hostname": [
+    "eel",
+    "tuna",
+    "wahoo"
+  ],
+  "problem_size": [
+    1000
+  ],
+  "tile_size": [
+    256
+  ],
+  "omp_num_threads": [6]
+}

@@ -1,6 +1,3 @@
-
-CC=icc CFLAGS="-O3 -xhost -ipo -fma -fopenmp -DPARALLEL_I=1";
-
 #!/bin/bash
 
 for x in ./nonTiled/*/;
