@@ -26,7 +26,7 @@ class Machine:
 
 
 class Command:
-    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None):
+    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None, loop_parallelized=None, mkl=False):
         self.executable = executable
         self.executable_short_name = executable.split('/')[-1]
         self.params = params
@@ -36,14 +36,19 @@ class Command:
         self.tiled = True if self.TS else False
         self.num_runs = num_runs
         self.parallel = True if num_threads else False
+        self.loop_parallelized = loop_parallelized
         self.num_threads = num_threads
         self.permutation = permutation
+        self.mkl = mkl
 
     def __str__(self):
         p_str = ''
         for p in self.params:
             p_str += ' ' + str(p)
-        environment_vars = '{}{} '.format('OMP_NUM_THREADS=', self.num_threads) if self.num_threads else ''
+        if self.mkl:
+            environment_vars = '{}{} '.format('MKL_NUM_THREADS=', self.num_threads) if self.num_threads else ''
+        else:
+            environment_vars = '{}{} '.format('OMP_NUM_THREADS=', self.num_threads) if self.num_threads else ''
         return environment_vars + str(self.executable) + p_str
 
     def log(self):
@@ -92,6 +97,7 @@ class Result:
         ret["TS"] = self.command.TS
         ret["parallel"] = self.command.parallel
         ret["num_threads"] = self.command.num_threads
+        ret["loop_parallelized"] = self.command.loop_parallelized
         ret["error"] = self.error
         ret["error_msg"] = self.error_msg
         ret["times"] = self.times
@@ -108,6 +114,7 @@ class Result:
         ret += '  TS: {}\n'.format(self.command.TS)
         ret += '  parallel: {}\n'.format(self.command.parallel)
         ret += '  num_threads: {}\n'.format(self.command.num_threads)
+        ret += '  loop_parallelized: "{}"\n'.format(self.command.loop_parallelized)
         ret += '  error: {}\n'.format(self.error)
         ret += '  error_msg: {}\n'.format(self.error_msg)
         ret += '  times: {}'.format(self.times)
@@ -165,6 +172,28 @@ def init_machines(hostnames):
         print('done.')
 
 
+def queue_baseline_tasks(filename, path_prefix='.'):
+    global hostnames
+
+    with open(filename) as f:
+        data = json.load(f)
+
+    init_machines(data['hostname'])
+
+    # Add tasks to queue
+    tasks = queue.Queue()
+    print('\nCreating tasks from config file...')
+
+    for N in data['problem_size']:
+        for num_threads in data['mkl_num_threads']:
+            tasks.put(Command('{}/SS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+            tasks.put(Command('{}/TS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+            tasks.put(Command('{}/TT_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+
+    return tasks
+
+
+
 def queue_tasks(filename, path_prefix='.'):
     global hostnames
 
@@ -181,22 +210,25 @@ def queue_tasks(filename, path_prefix='.'):
     loop_orders_4D = []
 
     for N in data['problem_size']:
-        for TS in data['tile_size']:
-            for permutation in loop_orders_2D:
-                binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
-                tasks.put(Command(binary, [N], permutation=permutation))
+        for permutation in loop_orders_2D:
+            binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
+            tasks.put(Command(binary, [N], permutation=permutation))
+
+            for num_threads in data['omp_num_threads']:
+                binaryI = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
+                binaryJ = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
+                tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
+                tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
+
+            for TS in data['tile_size']:
                 binary = '{}/2D-Sequential/tiled/{}/out/TMM'.format(path_prefix, permutation)
                 tasks.put(Command(binary, [N, TS, TS, TS], permutation=permutation))
 
                 for num_threads in data['omp_num_threads']:
-                    binaryI = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
-                    binaryJ = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
-                    tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation))
-                    tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation))
                     binaryI = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
                     binaryJ = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
-                    tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation))
-                    tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation))
+                    tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
+                    tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
 
     return tasks
 
@@ -212,9 +244,13 @@ def main():
     parser.add_argument('--path-prefix', '--path-prefix', help='String to prepend to >path-prefix>/2D-*/*iled/*/TMM*', default='./workspace/parric-ttmm/ttmm/alphaz_stuff/out')
     parser.add_argument('-f', '--config-file', default=None)
     parser.add_argument('-o', '--out-file', default='./results.json')
+    parser.add_argument('-b', '--baseline', default=None)
     args = vars(parser.parse_args())
 
-    tasks = queue_tasks(args['config_file'], args['path_prefix'])
+    if args['baseline']:
+        tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'])
+    else:
+        tasks = queue_tasks(args['config_file'], args['path_prefix'])
 
     results = []
 
