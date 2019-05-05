@@ -254,7 +254,7 @@ def main():
         if args['baseline']:
             tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'])
         else:
-            tasks = queue_tasks(args['config_file'], args['path_prefix'])
+            tasks = queue_tasks(args['config_file'], args['path_prefix'], N)
 
         results = []
 
