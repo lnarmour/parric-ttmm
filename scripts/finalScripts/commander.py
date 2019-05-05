@@ -194,7 +194,7 @@ def queue_baseline_tasks(filename, path_prefix='.'):
 
 
 
-def queue_tasks(filename, path_prefix='.'):
+def queue_tasks(filename, path_prefix='.', N=500):
     global hostnames
 
     with open(filename) as f:
@@ -209,26 +209,26 @@ def queue_tasks(filename, path_prefix='.'):
     loop_orders_2D = ['ijk', 'ikj', 'jik', 'jki', 'kij', 'kji']
     loop_orders_4D = []
 
-    for N in data['problem_size']:
-        for permutation in loop_orders_2D:
-            binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
-            tasks.put(Command(binary, [N], permutation=permutation))
+
+    for permutation in loop_orders_2D:
+        binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
+        tasks.put(Command(binary, [N], permutation=permutation))
+
+        for num_threads in data['omp_num_threads']:
+            binaryI = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
+            binaryJ = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
+            tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
+            tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
+
+        for TS in data['tile_size']:
+            binary = '{}/2D-Sequential/tiled/{}/out/TMM'.format(path_prefix, permutation)
+            tasks.put(Command(binary, [N, TS, TS, TS], permutation=permutation))
 
             for num_threads in data['omp_num_threads']:
-                binaryI = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
-                binaryJ = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
-                tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
-                tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
-
-            for TS in data['tile_size']:
-                binary = '{}/2D-Sequential/tiled/{}/out/TMM'.format(path_prefix, permutation)
-                tasks.put(Command(binary, [N, TS, TS, TS], permutation=permutation))
-
-                for num_threads in data['omp_num_threads']:
-                    binaryI = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
-                    binaryJ = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
-                    tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
-                    tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
+                binaryI = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
+                binaryJ = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
+                tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
+                tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
 
     return tasks
 
@@ -247,25 +247,29 @@ def main():
     parser.add_argument('-b', '--baseline', default=None)
     args = vars(parser.parse_args())
 
-    if args['baseline']:
-        tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'])
-    else:
-        tasks = queue_tasks(args['config_file'], args['path_prefix'])
+    with open(filename) as f:
+        data = json.load(f)
 
-    results = []
+    for N in data['problem_size']:
+        if args['baseline']:
+            tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'])
+        else:
+            tasks = queue_tasks(args['config_file'], args['path_prefix'])
 
-    if os.getenv("COLLECT"):
-        run_workers(machines, tasks, results)
-    else:
-        for t in list(tasks.queue):
-            print(t)
+        results = []
 
-    # print results
-    all_results = [r.serialize() for r in results]
+        if os.getenv("COLLECT"):
+            run_workers(machines, tasks, results)
+        else:
+            for t in list(tasks.queue):
+                print(t)
 
-    # TODO - json dump all_results to file
-    with open(args['out_file'], 'w') as outfile:
-        json.dump(all_results, outfile)
+        # print results
+        all_results = [r.serialize() for r in results]
+
+        # TODO - json dump all_results to file
+        with open('results/2D.N.{}.json'.format(N), 'w') as outfile:
+            json.dump(all_results, outfile)
 
     print('...done.')
 
