@@ -247,7 +247,7 @@ def main():
     parser.add_argument('-b', '--baseline', default=None)
     args = vars(parser.parse_args())
 
-    with open(filename) as f:
+    with open(args['config_file']) as f:
         data = json.load(f)
 
     for N in data['problem_size']:
