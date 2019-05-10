@@ -25,8 +25,8 @@ int main(int argc, char** argv) {
 
 	for (long i=0; i<N; i++)
 		for (long j=0; j<N; j++) {
-			*(A+i*N+j) = 1.14;
-			*(B+i*N+j) = 1.14;
+			*(A+i*N+j) = (float)rand();
+			*(B+i*N+j) = (float)rand();
 		}
 
   //Call the main computation
