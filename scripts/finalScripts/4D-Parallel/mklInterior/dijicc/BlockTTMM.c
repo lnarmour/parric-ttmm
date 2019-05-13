@@ -130,9 +130,9 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 		int c1,c2,c3,c4,c5,c6;
 		if ((n >= 2)) {
 			{
-				for(c3=0;c3 <= n-1;c3+=1)
-				 {
-           for(c4=0;c4 <= b-1;c4+=1)
+			    for(c3=0;c3 <= n-1;c3+=1)
+				{
+                     for(c4=0;c4 <= b-1;c4+=1)
 				 	 {
 				 	 	for(c5=0;c5 <= b-1;c5+=1)
 				 	 	 {
@@ -143,7 +143,7 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 				 	 	 	 }
 				 	 	 }
 				 	 }
-				 }
+				}
 				for(c2=1;c2 <= n-1;c2+=1)
 				 {
 				 	for(c3=c2;c3 <= n-1;c3+=1)
@@ -174,8 +174,15 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 				 }
 			}
 		}
+
+		#ifdef PARALLEL_D
+		#pragma omp parallel for
+		#endif
 		for(c1=1;c1 <= n-1;c1+=1)
 		 {
+		    #ifdef PARALLEL_I
+		    #pragma omp parallel for
+		    #endif
 		 	for(c2=0;c2 <= c1;c2+=1)
 		 	 {
 		 	 	for(c3=c1;c3 <= n-1;c3+=1)

@@ -1,10 +1,10 @@
 LIBRARIES=-lm
-CC=gcc
+CC=icc
 LD=xild
 AR=xiar
 OBJS = BlockTTMM.o 
-MKL_FLAGS=-I/s/parsons/l/sys/intel/mkl/include/ -L/s/parsons/l/sys/intel/compilers_and_libraries_2018.0.128/linux/mkl/lib/intel64  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core  -L/s/parsons/l/sys/intel/lib/intel64 -liomp5 -lm
-CFLAGS=  -O3  -std=c99  -I/usr/include/malloc/ $(MKL_FLAGS)
+MKL_FLAGS=-I/s/parsons/l/sys/intel/mkl/include/ -L/s/parsons/l/sys/intel/compilers_and_libraries_2019.3.199/linux/mkl/lib/intel64  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core  -L/s/parsons/l/sys/intel/lib/intel64 -liomp5 -lm
+CFLAGS=  -O3  -std=c99  -I/usr/include/malloc/  -xhost -ipo -fma $(MKL_FLAGS)
 all: plain check
 
 debug: CFLAGS =-DDEBUG -g -Wall -Wextra -std=c99 -I/usr/include/malloc/

@@ -121,67 +121,64 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 	}
 	//Memory Allocation
 	
-	#define S1(i,j,k,l,i4,i5) C(j,i,l,i4) = 0
-	#define S0(i,j,k,l,d,e) C(j,i,l,d) = (C(j,i,l,d))+((A(j,k,l,e))*(B(k,i,e,d)))
+	#define S1(i,j,k,l,i4,i5) C(j,k,l,i4) = 0
+	#define S0(i,j,k,l,d,e) C(j,k,l,d) = (C(j,k,l,d))+((A(j,i,l,e))*(B(i,k,e,d)))
 	{
 		//Domain
-		//{i,j,k,l,i4,i5|i5==0 && k==0 && n>=1 && b>=1 && j>=0 && i>=j && n>=i+1 && l>=0 && b>=l+1 && i4>=0 && b>=i4+1}
-		//{i,j,k,l,d,e|j>=0 && k>=j && n>=k+1 && l>=0 && b>=l+1 && e>=0 && b>=e+1 && n>=1 && b>=1 && k>=0 && i>=k && n>=i+1 && b>=d+1 && d>=0 && i>=j}
+		//{i,j,k,l,i4,i5|i5==0 && i==0 && n>=1 && b>=1 && j>=0 && k>=j && n>=k+1 && l>=0 && b>=l+1 && i4>=0 && b>=i4+1}
+		//{i,j,k,l,d,e|j>=0 && i>=j && n>=i+1 && l>=0 && b>=l+1 && e>=0 && b>=e+1 && n>=1 && b>=1 && i>=0 && k>=i && n>=k+1 && b>=d+1 && d>=0 && k>=j}
 		int c1,c2,c3,c4,c5,c6;
-		for(c4=0;c4 <= b-1;c4+=1)
-		 {
-		 	for(c5=0;c5 <= b-1;c5+=1)
-		 	 {
-		 	 	S1((0),(0),(0),(c4),(c5),(0));
-		 	 	for(c6=0;c6 <= b-1;c6+=1)
-		 	 	 {
-		 	 	 	S0((0),(0),(0),(c4),(c5),(c6));
-		 	 	 }
-		 	 }
-		 }
+		if ((n >= 2)) {
+			{
+				for(c3=0;c3 <= n-1;c3+=1)
+				 {
+           for(c4=0;c4 <= b-1;c4+=1)
+				 	 {
+				 	 	for(c5=0;c5 <= b-1;c5+=1)
+				 	 	 {
+				 	 	 	S1((0),(0),(c3),(c4),(c5),(0));
+				 	 	 	for(c6=0;c6 <= b-1;c6+=1)
+				 	 	 	 {
+				 	 	 	 	S0((0),(0),(c3),(c4),(c5),(c6));
+				 	 	 	 }
+				 	 	 }
+				 	 }
+				 }
+				for(c2=1;c2 <= n-1;c2+=1)
+				 {
+				 	for(c3=c2;c3 <= n-1;c3+=1)
+				 	 {
+				 	 	for(c4=0;c4 <= b-1;c4+=1)
+				 	 	 {
+				 	 	 	for(c5=0;c5 <= b-1;c5+=1)
+				 	 	 	 {
+				 	 	 	 	S1((0),(c2),(c3),(c4),(c5),(0));
+				 	 	 	 }
+				 	 	 }
+				 	 }
+				 }
+			}
+		}
+		if ((n == 1)) {
+			{
+				for(c4=0;c4 <= b-1;c4+=1)
+				 {
+				 	for(c5=0;c5 <= b-1;c5+=1)
+				 	 {
+				 	 	S1((0),(0),(0),(c4),(c5),(0));
+				 	 	for(c6=0;c6 <= b-1;c6+=1)
+				 	 	 {
+				 	 	 	S0((0),(0),(0),(c4),(c5),(c6));
+				 	 	 }
+				 	 }
+				 }
+			}
+		}
 		for(c1=1;c1 <= n-1;c1+=1)
 		 {
-		 	for(c4=0;c4 <= b-1;c4+=1)
+		 	for(c2=0;c2 <= c1;c2+=1)
 		 	 {
-		 	 	for(c5=0;c5 <= b-1;c5+=1)
-		 	 	 {
-		 	 	 	S1((c1),(0),(0),(c4),(c5),(0));
-		 	 	 	for(c6=0;c6 <= b-1;c6+=1)
-		 	 	 	 {
-		 	 	 	 	S0((c1),(0),(0),(c4),(c5),(c6));
-		 	 	 	 }
-		 	 	 }
-		 	 }
-		 	for(c3=1;c3 <= c1;c3+=1)
-		 	 {
-		 	 	for(c4=0;c4 <= b-1;c4+=1)
-		 	 	 {
-		 	 	 	for(c5=0;c5 <= b-1;c5+=1)
-		 	 	 	 {
-		 	 	 	 	for(c6=0;c6 <= b-1;c6+=1)
-		 	 	 	 	 {
-		 	 	 	 	 	S0((c1),(0),(c3),(c4),(c5),(c6));
-		 	 	 	 	 }
-		 	 	 	 }
-		 	 	 }
-		 	 }
-		 	#ifdef PARALLEL_I
-		    #pragma omp parallel for
-		    #endif
-		 	for(c2=1;c2 <= c1;c2+=1)
-		 	 {
-		 	 	for(c4=0;c4 <= b-1;c4+=1)
-		 	 	 {
-		 	 	 	for(c5=0;c5 <= b-1;c5+=1)
-		 	 	 	 {
-		 	 	 	 	S1((c1),(c2),(0),(c4),(c5),(0));
-		 	 	 	 }
-		 	 	 }
-
-		 	 	 #ifdef PARALLEL_D
-		        #pragma omp parallel for
-		        #endif
-		 	 	for(c3=c2;c3 <= c1;c3+=1)
+		 	 	for(c3=c1;c3 <= n-1;c3+=1)
 		 	 	 {
 		 	 	 	//mkl call here!
                     cblas_sgemm(CblasRowMajor, //storage format: row major
@@ -191,12 +188,12 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
                                 b, //columns in B
                                 b, //columns in A/rows in B
                                 1, //multiply A by 1
-                                *(A[c2][c3]), //A (assumes flat layout). In our case, this is the block at A[j][d]
+                                *(A[c2][c1]), //A (assumes flat layout). In our case, this is the block at A[j][i]
                                 b, //leading dimension of A
-                                *(B[c3][c1]), //B (assumes flat layout). In our case, this is the block at B[d][i]
+                                *(B[c1][c3]), //B (assumes flat layout). In our case, this is the block at B[i][d]
                                 b, //leading dimension of B
                                 1, //multiply C by this before adding AB
-                                *(C[c2][c1]), //C (assumes flat layout). In our case, this is the block at C[j][i]
+                                *(C[c2][c3]), //C (assumes flat layout). In our case, this is the block at C[j][d]
                                 b);//leading dimension of C
 		 	 	 }
 		 	 }

@@ -165,9 +165,6 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 		 	 	 	 }
 		 	 	 }
 		 	 }
-		 	#ifdef PARALLEL_I
-		    #pragma omp parallel for
-		    #endif
 		 	for(c2=1;c2 <= c1;c2+=1)
 		 	 {
 		 	 	for(c4=0;c4 <= b-1;c4+=1)
@@ -177,10 +174,6 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 		 	 	 	 	S1((c1),(c2),(0),(c4),(c5),(0));
 		 	 	 	 }
 		 	 	 }
-
-		 	 	 #ifdef PARALLEL_D
-		        #pragma omp parallel for
-		        #endif
 		 	 	for(c3=c2;c3 <= c1;c3+=1)
 		 	 	 {
 		 	 	 	//mkl call here!

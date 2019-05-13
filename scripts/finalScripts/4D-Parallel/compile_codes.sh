@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for x in ./nonTiled/*/;
+for x in ./mklInterior/*/;
 do
     cd "${x}";
     printf "Compiling for ${x} Parallel(I) ...";
