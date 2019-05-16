@@ -250,26 +250,43 @@ def main():
 
     init_machines(data['hostname'])
 
-    for N in data['problem_size']:
-        if args['baseline']:
+    if args['baseline']:
+        for N in data['problem_size']:
             tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'], N)
-        else:
+
+            results = []
+
+            if os.getenv("COLLECT"):
+                run_workers(machines, tasks, results)
+            else:
+                for t in list(tasks.queue):
+                    print(t)
+
+            # print results
+            all_results = [r.serialize() for r in results]
+
+            # TODO - json dump all_results to file
+            with open('results/ex.baseline.mkl.json'.format(N), 'w') as outfile:
+                json.dump(all_results, outfile)
+    
+    else:
+        for N in data['problem_size']:
             tasks = queue_tasks(args['config_file'], args['path_prefix'], N)
 
-        results = []
+            results = []
 
-        if os.getenv("COLLECT"):
-            run_workers(machines, tasks, results)
-        else:
-            for t in list(tasks.queue):
-                print(t)
+            if os.getenv("COLLECT"):
+                run_workers(machines, tasks, results)
+            else:
+                for t in list(tasks.queue):
+                    print(t)
 
-        # print results
-        all_results = [r.serialize() for r in results]
+            # print results
+            all_results = [r.serialize() for r in results]
 
-        # TODO - json dump all_results to file
-        with open('results/2D.N.{}.json'.format(N), 'w') as outfile:
-            json.dump(all_results, outfile)
+            # TODO - json dump all_results to file
+            with open('results/2D.N.{}.json'.format(N), 'w') as outfile:
+                json.dump(all_results, outfile)
 
     print('...done.')
 
