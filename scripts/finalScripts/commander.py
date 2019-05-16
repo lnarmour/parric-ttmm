@@ -290,7 +290,7 @@ def main():
 
             # TODO - json dump all_results to file
             with open('results/2D.N.{}.json'.format(N), 'w') as outfile:
-                json.dump(all_results, outfile)
+                json.dump(all_results, outfile, indent='  ')
 
     print('...done.')
 
