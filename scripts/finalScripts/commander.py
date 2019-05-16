@@ -130,6 +130,9 @@ def worker(machine, tasks, results):
             break
 
         command_string = '{} && '.format(str(command)) * (command.num_runs-1)+ str(command)
+        print("=====")
+        print(command_string)
+        print("=====")
 
         # remotely invoke 'command' on 'machine' via ssh
         echo_pipe = subprocess.Popen(['echo', str(command_string)], stdout=subprocess.PIPE)
@@ -267,7 +270,7 @@ def main():
         print('gathered {} results'.format(len(all_results)))
 
         # TODO - json dump all_results to file
-        with open('results/ex.baseline.mkl.json'.format(N), 'w') as outfile:
+        with open('results/ex.baseline.mkl.json', 'w') as outfile:
             json.dump(all_results, outfile)
 
     else:
