@@ -268,7 +268,7 @@ def main():
 
         # TODO - json dump all_results to file
         with open('results/baseline.mkl.json', 'w') as outfile:
-            json.dump(all_results, outfile)
+            json.dump(all_results, outfile, indent=2)
 
     else:
         for N in data['problem_size']:
