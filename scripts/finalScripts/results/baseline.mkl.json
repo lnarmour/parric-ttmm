@@ -12,13 +12,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.020716,
-      0.006494,
-      0.007265,
-      0.006472,
-      0.006419,
-      0.006433,
-      0.006518
+      10.156942,
+      0.047083,
+      0.036811,
+      0.023501,
+      0.027233,
+      0.080185,
+      0.016837
     ]
   },
   {
@@ -34,35 +34,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.022728,
-      0.009088,
-      0.011179,
-      0.007992,
-      0.00866,
-      0.013878,
-      0.008151
-    ]
-  },
-  {
-    "machine": "char.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 1500",
-    "permutation": null,
-    "N": 1500,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.036155,
-      0.017083,
-      0.017526,
-      0.0233,
-      0.015614,
-      0.018572,
-      0.017176
+      5.837386,
+      0.067581,
+      0.064781,
+      0.056825,
+      0.033331,
+      0.010994,
+      0.01117
     ]
   },
   {
@@ -78,62 +56,18 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.030179,
-      0.012646,
-      0.010042,
-      0.009217,
-      0.010068,
-      0.013413,
-      0.012067
+      7.664848,
+      0.048821,
+      0.032041,
+      0.021458,
+      0.015906,
+      0.017474,
+      0.015562
     ]
   },
   {
-    "machine": "blowfish.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 1000",
-    "permutation": null,
-    "N": 1000,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.035833,
-      0.01798,
-      0.017682,
-      0.018735,
-      0.017127,
-      0.018849,
-      0.017534
-    ]
-  },
-  {
-    "machine": "dorado.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 2000",
-    "permutation": null,
-    "N": 2000,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.056904,
-      0.037554,
-      0.035998,
-      0.050358,
-      0.037298,
-      0.038195,
-      0.046808
-    ]
-  },
-  {
-    "machine": "brill.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 1500",
+    "machine": "char.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 1500",
     "permutation": null,
     "N": 1500,
     "tiled": false,
@@ -144,13 +78,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.04687,
-      0.031549,
-      0.050143,
-      0.037006,
-      0.038535,
-      0.037618,
-      0.038268
+      7.898417,
+      0.05838,
+      0.047074,
+      0.023381,
+      0.024668,
+      0.02391,
+      0.023929
     ]
   },
   {
@@ -166,18 +100,62 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.081541,
-      0.063554,
-      0.063697,
-      0.053233,
-      0.063511,
-      0.047907,
-      0.066505
+      7.509837,
+      0.138402,
+      0.109813,
+      0.108402,
+      0.080251,
+      0.064054,
+      0.068647
     ]
   },
   {
-    "machine": "cod.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 2000",
+    "machine": "brill.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 1500",
+    "permutation": null,
+    "N": 1500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      5.636276,
+      0.132038,
+      0.105509,
+      0.050897,
+      0.038567,
+      0.035726,
+      0.036356
+    ]
+  },
+  {
+    "machine": "blowfish.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 1000",
+    "permutation": null,
+    "N": 1000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      6.880175,
+      0.034972,
+      0.018251,
+      0.019936,
+      0.020053,
+      0.018677,
+      0.019941
+    ]
+  },
+  {
+    "machine": "dorado.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 2000",
     "permutation": null,
     "N": 2000,
     "tiled": false,
@@ -188,13 +166,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.080775,
-      0.057356,
-      0.073178,
-      0.055778,
-      0.073288,
-      0.050114,
-      0.05034
+      7.411119,
+      0.039044,
+      0.040109,
+      0.040109,
+      0.038887,
+      0.037061,
+      0.037731
     ]
   },
   {
@@ -210,145 +188,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.100456,
-      0.065509,
-      0.104729,
-      0.104242,
-      0.102749,
-      0.082948,
-      0.083482
-    ]
-  },
-  {
-    "machine": "mackerel.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 3500",
-    "permutation": null,
-    "N": 3500,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.160975,
-      0.128855,
-      0.103935,
-      0.152444,
-      0.09498,
-      0.095685,
-      0.09417
-    ]
-  },
-  {
-    "machine": "perch.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 4000",
-    "permutation": null,
-    "N": 4000,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.177565,
-      0.147316,
-      0.147554,
-      0.171559,
-      0.133878,
-      0.161456,
-      0.13027
-    ]
-  },
-  {
-    "machine": "sardine.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 4500",
-    "permutation": null,
-    "N": 4500,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.22002,
-      0.229699,
-      0.197101,
-      0.188803,
-      0.21656,
-      0.186237,
-      0.189166
-    ]
-  },
-  {
-    "machine": "sole.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 5000",
-    "permutation": null,
-    "N": 5000,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.407563,
-      0.274379,
-      0.253844,
-      0.251743,
-      0.261328,
-      0.252461,
-      0.252261
-    ]
-  },
-  {
-    "machine": "tarpon.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 5500",
-    "permutation": null,
-    "N": 5500,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.413495,
-      0.366678,
-      0.320909,
-      0.319792,
-      0.320732,
-      0.327359,
-      0.326672
-    ]
-  },
-  {
-    "machine": "tuna.cs.colostate.edu",
-    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 6000",
-    "permutation": null,
-    "N": 6000,
-    "tiled": false,
-    "TS": null,
-    "parallel": true,
-    "num_threads": 6,
-    "loop_parallelized": null,
-    "error": false,
-    "error_msg": null,
-    "times": [
-      0.507217,
-      0.450204,
-      0.413499,
-      0.417936,
-      0.416803,
-      0.417481,
-      0.411893
+      7.538295,
+      0.126687,
+      0.128317,
+      0.111729,
+      0.093012,
+      0.082122,
+      0.100062
     ]
   },
   {
@@ -364,13 +210,167 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.567299,
-      0.544336,
-      0.519871,
-      0.515956,
-      0.527566,
-      0.518878,
-      0.516277
+      0.607531,
+      0.645266,
+      0.613645,
+      0.611041,
+      0.607458,
+      0.596963,
+      0.516775
+    ]
+  },
+  {
+    "machine": "mackerel.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 3500",
+    "permutation": null,
+    "N": 3500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      7.788885,
+      0.143508,
+      0.116215,
+      0.123119,
+      0.122928,
+      0.114632,
+      0.097954
+    ]
+  },
+  {
+    "machine": "perch.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 4000",
+    "permutation": null,
+    "N": 4000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      7.591727,
+      0.184458,
+      0.176543,
+      0.160296,
+      0.154611,
+      0.171647,
+      0.137308
+    ]
+  },
+  {
+    "machine": "cod.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 2000",
+    "permutation": null,
+    "N": 2000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      6.985095,
+      0.089968,
+      0.073455,
+      0.069458,
+      0.071718,
+      0.068914,
+      0.046085
+    ]
+  },
+  {
+    "machine": "sardine.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 4500",
+    "permutation": null,
+    "N": 4500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      8.113147,
+      0.209018,
+      0.204025,
+      0.260267,
+      0.184972,
+      0.186691,
+      0.202245
+    ]
+  },
+  {
+    "machine": "sole.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 5000",
+    "permutation": null,
+    "N": 5000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      8.078433,
+      0.316848,
+      0.282968,
+      0.260253,
+      0.255038,
+      0.262595,
+      0.252722
+    ]
+  },
+  {
+    "machine": "tuna.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 6000",
+    "permutation": null,
+    "N": 6000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      8.104452,
+      0.470065,
+      0.417533,
+      0.415529,
+      0.407843,
+      0.417788,
+      0.413545
+    ]
+  },
+  {
+    "machine": "tarpon.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 5500",
+    "permutation": null,
+    "N": 5500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      6.228492,
+      0.320462,
+      0.327918,
+      0.329645,
+      0.335817,
+      0.327484,
+      0.365155
     ]
   },
   {
@@ -386,13 +386,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.180373,
-      0.876765,
-      0.883213,
-      0.86085,
-      0.904978,
-      0.903501,
-      0.864243
+      8.138929,
+      0.402169,
+      0.87042,
+      0.886793,
+      0.894718,
+      0.905844,
+      0.870134
     ]
   },
   {
@@ -408,13 +408,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.157163,
-      0.83116,
-      0.824775,
-      0.851463,
-      0.864316,
-      0.830693,
-      0.876516
+      7.120585,
+      1.006628,
+      0.830676,
+      0.881701,
+      0.80302,
+      0.838699,
+      0.838183
     ]
   },
   {
@@ -430,13 +430,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.134243,
-      0.774422,
-      0.786755,
-      0.781467,
-      0.790872,
-      0.783573,
-      0.817782
+      6.998829,
+      1.025367,
+      0.775471,
+      0.807519,
+      0.775156,
+      0.794569,
+      0.802286
     ]
   },
   {
@@ -452,13 +452,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.113333,
-      0.709981,
-      0.74733,
-      0.727691,
-      0.707987,
-      0.715625,
-      0.725463
+      7.051599,
+      1.045237,
+      0.719766,
+      0.735937,
+      0.753055,
+      0.714327,
+      0.737887
     ]
   },
   {
@@ -474,13 +474,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.106057,
-      0.66014,
-      0.67505,
-      0.674043,
-      0.679336,
-      0.665972,
-      0.673116
+      8.096684,
+      0.466237,
+      0.672438,
+      0.62713,
+      0.654095,
+      0.654776,
+      0.666795
     ]
   },
   {
@@ -496,17 +496,17 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.17643,
-      0.570084,
-      0.6121,
-      0.559862,
-      0.605341,
-      0.581942,
-      0.608116
+      8.159579,
+      1.494067,
+      0.586224,
+      0.601083,
+      0.599475,
+      0.603003,
+      0.599896
     ]
   },
   {
-    "machine": "char.cs.colostate.edu",
+    "machine": "bonito.cs.colostate.edu",
     "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 7000",
     "permutation": null,
     "N": 7000,
@@ -518,17 +518,17 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.903017,
-      0.876334,
-      0.886956,
-      0.851704,
-      0.877433,
-      0.874497,
-      0.88683
+      1.578473,
+      0.870144,
+      0.891233,
+      0.867341,
+      0.880725,
+      0.875517,
+      0.887468
     ]
   },
   {
-    "machine": "blowfish.cs.colostate.edu",
+    "machine": "flounder.cs.colostate.edu",
     "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 7500",
     "permutation": null,
     "N": 7500,
@@ -540,13 +540,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      0.876838,
-      0.851572,
-      0.854407,
-      0.861297,
-      0.858086,
-      0.850467,
-      0.861357
+      1.530822,
+      0.833098,
+      0.868616,
+      0.8558,
+      0.86676,
+      0.842516,
+      0.851189
     ]
   },
   {
@@ -562,13 +562,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.241856,
-      1.495608,
-      1.496059,
-      1.493521,
-      1.500889,
-      1.535285,
-      1.496445
+      7.978121,
+      1.485095,
+      1.519395,
+      1.486873,
+      1.543436,
+      1.478654,
+      1.480466
     ]
   },
   {
@@ -584,13 +584,13 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.339072,
-      1.402351,
-      1.430612,
-      1.412099,
-      1.429916,
-      1.427666,
-      1.424079
+      8.296575,
+      1.344137,
+      1.415761,
+      1.405673,
+      1.408241,
+      1.393195,
+      1.415531
     ]
   },
   {
@@ -606,17 +606,17 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.420696,
-      1.327195,
-      1.318307,
-      1.290932,
-      1.295533,
-      1.331044,
-      1.29166
+      8.484832,
+      1.232372,
+      1.328748,
+      1.332005,
+      1.335978,
+      1.330818,
+      1.320209
     ]
   },
   {
-    "machine": "brill.cs.colostate.edu",
+    "machine": "blowfish.cs.colostate.edu",
     "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 8000",
     "permutation": null,
     "N": 8000,
@@ -628,13 +628,79 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.859189,
-      1.836044,
-      1.850467,
-      1.834999,
-      1.828993,
-      1.846203,
-      1.841205
+      1.620993,
+      1.84596,
+      1.825556,
+      1.883262,
+      1.810665,
+      1.880268,
+      1.79368
+    ]
+  },
+  {
+    "machine": "halibut.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 8500",
+    "permutation": null,
+    "N": 8500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      1.611435,
+      1.823528,
+      1.828427,
+      1.838409,
+      1.811082,
+      1.822538,
+      1.821343
+    ]
+  },
+  {
+    "machine": "mackerel.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 9000",
+    "permutation": null,
+    "N": 9000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      1.626502,
+      1.799218,
+      1.775553,
+      1.843678,
+      1.77336,
+      1.77744,
+      1.823284
+    ]
+  },
+  {
+    "machine": "cod.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 9500",
+    "permutation": null,
+    "N": 9500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      1.633993,
+      1.781117,
+      1.806602,
+      1.754962,
+      1.771688,
+      1.793632,
+      1.782947
     ]
   },
   {
@@ -650,17 +716,17 @@
     "error": false,
     "error_msg": null,
     "times": [
-      2.069941,
-      2.212956,
-      2.198006,
-      2.199475,
-      2.211091,
-      2.196153,
-      2.185701
+      1.548171,
+      2.228052,
+      2.227733,
+      2.211322,
+      2.217613,
+      2.223378,
+      2.219366
     ]
   },
   {
-    "machine": "bonito.cs.colostate.edu",
+    "machine": "char.cs.colostate.edu",
     "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 7500",
     "permutation": null,
     "N": 7500,
@@ -672,17 +738,39 @@
     "error": false,
     "error_msg": null,
     "times": [
-      2.003151,
-      2.118466,
-      2.12256,
-      2.108507,
-      2.106537,
-      2.111195,
-      2.113261
+      1.624086,
+      2.089933,
+      2.128053,
+      2.110124,
+      2.08745,
+      2.121951,
+      2.117284
     ]
   },
   {
-    "machine": "dorado.cs.colostate.edu",
+    "machine": "sole.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 10000",
+    "permutation": null,
+    "N": 10000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      1.876594,
+      2.761124,
+      2.762638,
+      2.802335,
+      2.699742,
+      2.75452,
+      2.755407
+    ]
+  },
+  {
+    "machine": "brill.cs.colostate.edu",
     "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 8000",
     "permutation": null,
     "N": 8000,
@@ -694,13 +782,365 @@
     "error": false,
     "error_msg": null,
     "times": [
-      1.98221,
-      1.972417,
-      1.962745,
-      1.986306,
-      1.962571,
-      1.968559,
-      1.981382
+      2.681345,
+      1.960601,
+      1.984985,
+      1.998554,
+      1.947393,
+      1.954082,
+      2.010025
+    ]
+  },
+  {
+    "machine": "tarpon.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 10500",
+    "permutation": null,
+    "N": 10500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      2.802864,
+      2.734641,
+      2.675815,
+      2.710551,
+      2.69959,
+      2.712484,
+      2.711798
+    ]
+  },
+  {
+    "machine": "grouper.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 11000",
+    "permutation": null,
+    "N": 11000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      2.511456,
+      2.710579,
+      2.688363,
+      2.715221,
+      2.718763,
+      2.694335,
+      2.710677
+    ]
+  },
+  {
+    "machine": "dorado.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 8500",
+    "permutation": null,
+    "N": 8500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      2.768179,
+      2.839522,
+      2.852494,
+      2.847827,
+      2.847094,
+      2.862954,
+      2.846334
+    ]
+  },
+  {
+    "machine": "barracuda.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 9000",
+    "permutation": null,
+    "N": 9000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      2.966019,
+      2.723273,
+      2.680079,
+      2.721231,
+      2.712876,
+      2.70363,
+      2.719295
+    ]
+  },
+  {
+    "machine": "marlin.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 11500",
+    "permutation": null,
+    "N": 11500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      3.645118,
+      3.681974,
+      3.683824,
+      3.690395,
+      3.693276,
+      3.693878,
+      3.672482
+    ]
+  },
+  {
+    "machine": "shark.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 12000",
+    "permutation": null,
+    "N": 12000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      3.74369,
+      3.645369,
+      3.672193,
+      3.655293,
+      3.650843,
+      3.660982,
+      3.637412
+    ]
+  },
+  {
+    "machine": "perch.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 9500",
+    "permutation": null,
+    "N": 9500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      4.02984,
+      3.595261,
+      3.549983,
+      3.57603,
+      3.560621,
+      3.605625,
+      3.536966
+    ]
+  },
+  {
+    "machine": "flounder.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 12500",
+    "permutation": null,
+    "N": 12500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      3.833545,
+      3.603067,
+      3.621251,
+      3.657135,
+      3.59585,
+      3.642687,
+      3.64584
+    ]
+  },
+  {
+    "machine": "sardine.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 10000",
+    "permutation": null,
+    "N": 10000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      3.624006,
+      4.42959,
+      4.379334,
+      4.415638,
+      4.415841,
+      4.435234,
+      4.412446
+    ]
+  },
+  {
+    "machine": "tuna.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 10500",
+    "permutation": null,
+    "N": 10500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      4.516423,
+      4.262626,
+      4.234909,
+      4.245793,
+      4.270709,
+      4.270387,
+      4.232912
+    ]
+  },
+  {
+    "machine": "turbot.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/TT_MKL 13000",
+    "permutation": null,
+    "N": 13000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      4.229502,
+      4.610134,
+      4.6135,
+      4.581214,
+      4.632213,
+      4.563236,
+      4.639612
+    ]
+  },
+  {
+    "machine": "eel.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 11000",
+    "permutation": null,
+    "N": 11000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      5.31405,
+      5.064232,
+      5.096161,
+      5.119357,
+      5.082244,
+      5.11178,
+      5.087569
+    ]
+  },
+  {
+    "machine": "herring.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 11500",
+    "permutation": null,
+    "N": 11500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      5.634826,
+      5.869866,
+      5.902456,
+      5.926056,
+      5.872982,
+      5.902311,
+      5.9245
+    ]
+  },
+  {
+    "machine": "pollock.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 12000",
+    "permutation": null,
+    "N": 12000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      6.960789,
+      6.695131,
+      6.724864,
+      6.719064,
+      6.733251,
+      6.748689,
+      6.705647
+    ]
+  },
+  {
+    "machine": "bonito.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 12500",
+    "permutation": null,
+    "N": 12500,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      7.250319,
+      7.539678,
+      7.56115,
+      7.544326,
+      7.531923,
+      7.54745,
+      7.545057
+    ]
+  },
+  {
+    "machine": "swordfish.cs.colostate.edu",
+    "command": "MKL_NUM_THREADS=6 /s/chopin/l/grad/lnarmour/git/parric-ttmm/scripts/finalScripts/baseline/mkl/SS_MKL 13000",
+    "permutation": null,
+    "N": 13000,
+    "tiled": false,
+    "TS": null,
+    "parallel": true,
+    "num_threads": 6,
+    "loop_parallelized": null,
+    "error": false,
+    "error_msg": null,
+    "times": [
+      7.968418,
+      8.333947,
+      8.352917,
+      8.309802,
+      8.37265,
+      8.331602,
+      8.364493
     ]
   }
 ]
