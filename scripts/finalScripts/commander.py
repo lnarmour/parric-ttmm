@@ -173,7 +173,7 @@ def init_machines(hostnames):
         print('done.')
 
 
-def queue_baseline_tasks(filename, path_prefix='.', N=500):
+def queue_baseline_tasks(filename, path_prefix='.'):
     global hostnames
 
     with open(filename) as f:
@@ -251,7 +251,7 @@ def main():
     init_machines(data['hostname'])
 
     if args['baseline']:
-        tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'], N)
+        tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'])
 
         results = []
 
