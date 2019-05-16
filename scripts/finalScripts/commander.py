@@ -267,7 +267,7 @@ def main():
         print('gathered {} results'.format(len(all_results)))
 
         # TODO - json dump all_results to file
-        with open('results/ex.baseline.mkl.json'.format(N), 'w') as outfile:
+        with open('results/baseline.mkl.json', 'w') as outfile:
             json.dump(all_results, outfile)
 
     else:
