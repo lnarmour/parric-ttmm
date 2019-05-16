@@ -90,6 +90,7 @@ class Result:
     def serialize(self):
         # TODO - haven't fully tested
         ret = {}
+        ret["machine"] = str(self.machine)
         ret["command"] = str(self.command)
         ret["permutation"] = self.command.permutation
         ret["N"] = self.command.N
@@ -103,9 +104,9 @@ class Result:
         ret["times"] = self.times
         return ret
 
-
     def __str__(self):
         ret = 'Result\n'
+        ret += '  machine: {}\n'.format(self.machine)
         ret += '  command: {}\n'.format(self.command)
         ret += '  host: {}\n'.format(self.machine)
         ret += '  permutation: {}\n'.format(self.command.permutation)
@@ -172,7 +173,7 @@ def init_machines(hostnames):
         print('done.')
 
 
-def queue_baseline_tasks(filename, path_prefix='.'):
+def queue_baseline_tasks(filename, path_prefix='.', N=500):
     global hostnames
 
     with open(filename) as f:
@@ -184,11 +185,10 @@ def queue_baseline_tasks(filename, path_prefix='.'):
     tasks = queue.Queue()
     print('\nCreating tasks from config file...')
 
-    for N in data['problem_size']:
-        for num_threads in data['mkl_num_threads']:
-            tasks.put(Command('{}/SS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
-            tasks.put(Command('{}/TS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
-            tasks.put(Command('{}/TT_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+    for num_threads in data['mkl_num_threads']:
+        tasks.put(Command('{}/SS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+        tasks.put(Command('{}/TS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+        tasks.put(Command('{}/TT_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
 
     return tasks
 
@@ -252,7 +252,7 @@ def main():
 
     for N in data['problem_size']:
         if args['baseline']:
-            tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'])
+            tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'], N)
         else:
             tasks = queue_tasks(args['config_file'], args['path_prefix'], N)
 
