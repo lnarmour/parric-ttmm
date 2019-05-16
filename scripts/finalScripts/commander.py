@@ -179,8 +179,6 @@ def queue_baseline_tasks(filename, path_prefix='.', N=500):
     with open(filename) as f:
         data = json.load(f)
 
-    init_machines(data['hostname'])
-
     # Add tasks to queue
     tasks = queue.Queue()
     print('\nCreating tasks from config file...')
@@ -249,6 +247,8 @@ def main():
 
     with open(args['config_file']) as f:
         data = json.load(f)
+
+    init_machines(data['hostname'])
 
     for N in data['problem_size']:
         if args['baseline']:
