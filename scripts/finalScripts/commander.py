@@ -181,12 +181,12 @@ def queue_baseline_tasks(filename, path_prefix='.', N=500):
 
     # Add tasks to queue
     tasks = queue.Queue()
-    print('\nCreating tasks from config file...')
 
-    for num_threads in data['mkl_num_threads']:
-        tasks.put(Command('{}/SS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
-        tasks.put(Command('{}/TS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
-        tasks.put(Command('{}/TT_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+    for N in data['problem_size']:
+        for num_threads in data['mkl_num_threads']:
+            tasks.put(Command('{}/SS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+            #tasks.put(Command('{}/TS_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
+            tasks.put(Command('{}/TT_MKL'.format(path_prefix), [N], num_threads=num_threads, mkl=True))
 
     return tasks
 
@@ -251,24 +251,25 @@ def main():
     init_machines(data['hostname'])
 
     if args['baseline']:
-        for N in data['problem_size']:
-            tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'], N)
+        tasks = queue_baseline_tasks(args['config_file'], args['path_prefix'], N)
 
-            results = []
+        results = []
 
-            if os.getenv("COLLECT"):
-                run_workers(machines, tasks, results)
-            else:
-                for t in list(tasks.queue):
-                    print(t)
+        if os.getenv("COLLECT"):
+            run_workers(machines, tasks, results)
+        else:
+            for t in list(tasks.queue):
+                print(t)
 
-            # print results
-            all_results = [r.serialize() for r in results]
+        # print results
 
-            # TODO - json dump all_results to file
-            with open('results/ex.baseline.mkl.json'.format(N), 'w') as outfile:
-                json.dump(all_results, outfile)
-    
+        all_results = [r.serialize() for r in results]
+        print('gathered {} results'.format(len(all_results)))
+
+        # TODO - json dump all_results to file
+        with open('results/ex.baseline.mkl.json'.format(N), 'w') as outfile:
+            json.dump(all_results, outfile)
+
     else:
         for N in data['problem_size']:
             tasks = queue_tasks(args['config_file'], args['path_prefix'], N)
