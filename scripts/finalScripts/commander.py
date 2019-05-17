@@ -26,13 +26,15 @@ class Machine:
 
 
 class Command:
-    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None, loop_parallelized=None, mkl=False):
+    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None, loop_parallelized=None, mkl=False, block_size=None, blocks_per_side=None):
         self.executable = executable
         self.executable_short_name = executable.split('/')[-1]
         self.params = params
         self.N = params[0]
         # TODO - will need to adjust this for 4D layouts
         self.TS = params[1] if len(params)==4 else None
+        self.blocks_per_side= blocks_per_side
+        self.block_size=block_size
         self.tiled = True if self.TS else False
         self.num_runs = num_runs
         self.parallel = True if num_threads else False
@@ -77,7 +79,6 @@ class Command:
         # In case a tuple with a command at the end ties the previous results during a sort
         return self.__hash__() < other.__hash__()
 
-
 class Result:
     def __init__(self, machine, command, times, error=False, error_msg=None):
         self.machine = machine
@@ -96,6 +97,8 @@ class Result:
         ret["N"] = self.command.N
         ret["tiled"] = self.command.tiled
         ret["TS"] = self.command.TS
+        ret["blocks_per_side"] = self.command.blocks_per_side
+        ret["block_size"] = self.command.block_size
         ret["parallel"] = self.command.parallel
         ret["num_threads"] = self.command.num_threads
         ret["loop_parallelized"] = self.command.loop_parallelized
@@ -113,6 +116,8 @@ class Result:
         ret += '  N: {}\n'.format(self.command.N)
         ret += '  tiled: {}\n'.format(self.command.tiled)
         ret += '  TS: {}\n'.format(self.command.TS)
+        ret += '  blocks_per_side: {}\n'.format(self.command.blocks_per_side)
+        ret += '  block_size: {}\n'.format(self.command.block_size)
         ret += '  parallel: {}\n'.format(self.command.parallel)
         ret += '  num_threads: {}\n'.format(self.command.num_threads)
         ret += '  loop_parallelized: "{}"\n'.format(self.command.loop_parallelized)
@@ -192,42 +197,48 @@ def queue_baseline_tasks(filename, path_prefix='.'):
 
 
 
-def queue_tasks(filename, path_prefix='.', N=500):
+def queue_tasks(filename, path_prefix='.', N=500, two_d=False, four_d=False):
     global hostnames
 
     with open(filename) as f:
         data = json.load(f)
 
-    init_machines(data['hostname'])
-
     # Add tasks to queue
     tasks = queue.Queue()
-    print('\nCreating tasks from config file...')
 
     loop_orders_2D = ['ijk', 'ikj', 'jik', 'jki', 'kij', 'kji']
-    loop_orders_4D = []
+    loop_orders_4D = [outer + inner for outer in ['ijd', 'idj', 'jid', 'jdi', 'dij', 'dji'] for inner in ['kle', 'kel', 'lke', 'lek', 'ekl', 'elk'] ]
 
-
-    for permutation in loop_orders_2D:
-        binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
-        tasks.put(Command(binary, [N], permutation=permutation))
-
-        for num_threads in data['omp_num_threads']:
-            binaryI = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
-            binaryJ = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
-            tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
-            tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
-
-        for TS in data['tile_size']:
-            binary = '{}/2D-Sequential/tiled/{}/out/TMM'.format(path_prefix, permutation)
-            tasks.put(Command(binary, [N, TS, TS, TS], permutation=permutation))
+    if two_d:
+        for permutation in loop_orders_2D:
+            binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
+            tasks.put(Command(binary, [N], permutation=permutation))
 
             for num_threads in data['omp_num_threads']:
-                binaryI = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
-                binaryJ = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
-                tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
-                tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
+                binaryI = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
+                binaryJ = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
+                tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
+                tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
 
+            for TS in data['tile_size']:
+                binary = '{}/2D-Sequential/tiled/{}/out/TMM'.format(path_prefix, permutation)
+                tasks.put(Command(binary, [N, TS, TS, TS], permutation=permutation))
+
+                for num_threads in data['omp_num_threads']:
+                    binaryI = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
+                    binaryJ = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
+                    tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
+                    tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
+    if four_d:
+        for permutation in loop_orders_4D:
+            binary = '{}/4D-Sequential/tiled/{}/out/BlockTTMM'.format(path_prefix, permutation)
+
+            for TS in data['tile_size']:
+                if N < TS:
+                    continue
+                tasks.put(Command(binary, [N//TS, TS], permutation=permutation, blocks_per_side=N//TS, block_size=TS))
+                
+        
     return tasks
 
 def main():
@@ -243,6 +254,9 @@ def main():
     parser.add_argument('-f', '--config-file', default=None)
     parser.add_argument('-o', '--out-file', default='./results.json')
     parser.add_argument('-b', '--baseline', default=None)
+    parser.add_argument('-2d', '--two-d', default=None)
+    parser.add_argument('-4d', '--four-d', default=None)
+    
     args = vars(parser.parse_args())
 
     with open(args['config_file']) as f:
@@ -272,7 +286,7 @@ def main():
 
     else:
         for N in data['problem_size']:
-            tasks = queue_tasks(args['config_file'], args['path_prefix'], N)
+            tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'])
 
             results = []
 
@@ -286,7 +300,7 @@ def main():
             all_results = [r.serialize() for r in results]
 
             # TODO - json dump all_results to file
-            with open('results/2D.N.{}.json'.format(N), 'w') as outfile:
+            with open('{}_{}.json'.format( args['out_file'], N), 'w') as outfile:
                 json.dump(all_results, outfile, indent=2)
 
     print('...done.')
