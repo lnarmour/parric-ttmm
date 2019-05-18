@@ -7,6 +7,7 @@ import os
 import sys
 import argparse
 import json
+from glob import glob
 
 global machines
 global tasks
@@ -196,6 +197,35 @@ def queue_baseline_tasks(filename, path_prefix='.'):
     return tasks
 
 
+def queue_failed_tasks(results_files, path_prefix):
+    data = []
+    for filename in glob(results_files):
+        with open(filename, 'r') as f:
+            data += json.load(f)
+
+    # Add tasks to queue
+    tasks = queue.Queue()
+
+    data = [x for x in data if len(x['times']) == 0]
+    for x in data:
+        if x['tiled']:
+            if x['parallel']:
+                binary = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_{}'.format(path_prefix, x['permutation'],
+                                                                              x['loop_parallelized'])
+            else:
+                binary = '{}/2D-Sequential/tiled/{}/out/TMM'.format(path_prefix, x['permutation'])
+        else:
+            if x['parallel']:
+                binary = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_{}'.format(path_prefix, x['permutation'],
+                                                                                 x['loop_parallelized'])
+            else:
+                binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, x['permutation'])
+
+        tasks.put(Command(binary, [x['N'], x['TS'], x['TS'], x['TS']], num_threads=x['num_threads'], permutation=x['permutation'],
+                loop_parallelized=x['loop_parallelized']))
+
+    return tasks
+
 
 def queue_tasks(filename, path_prefix='.', N=500, two_d=False, four_d=False, loop_orders_2D=None):
     global hostnames
@@ -258,8 +288,10 @@ def main():
     parser.add_argument('-2d', '--two-d', default=None)
     parser.add_argument('-4d', '--four-d', default=None)
     parser.add_argument('-lo2d', '--loop-orders-2D', default=None, nargs='+') # loop order 2D
+    parser.add_argument('-ffailed', '--failed-tasks', default=None)
     
     args = vars(parser.parse_args())
+
 
     with open(args['config_file']) as f:
         data = json.load(f)
@@ -288,7 +320,10 @@ def main():
 
     else:
         for N in data['problem_size']:
-            tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], loop_orders_2D=args['loop_orders_2D'])
+            if args['failed_tasks']:
+                tasks = queue_failed_tasks(args['failed_tasks'], args['path_prefix'])
+            else:
+                tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], loop_orders_2D=args['loop_orders_2D'])
 
             results = []
 
@@ -301,9 +336,11 @@ def main():
             # print results
             all_results = [r.serialize() for r in results]
 
-            # TODO - json dump all_results to file
             with open('{}_{}.json'.format( args['out_file'], N), 'w') as outfile:
                 json.dump(all_results, outfile, indent=2)
+
+            if args['failed_tasks']:
+                break
 
     print('...done.')
 
