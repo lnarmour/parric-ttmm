@@ -288,7 +288,7 @@ def main():
 
     else:
         for N in data['problem_size']:
-            tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], lo2D=args['loop_orders_2D'])
+            tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], loop_orders_2D=args['loop_orders_2D'])
 
             results = []
 
