@@ -197,7 +197,7 @@ def queue_baseline_tasks(filename, path_prefix='.'):
 
 
 
-def queue_tasks(filename, path_prefix='.', N=500, two_d=False, four_d=False):
+def queue_tasks(filename, path_prefix='.', N=500, two_d=False, four_d=False, loop_orders_2D=None):
     global hostnames
 
     with open(filename) as f:
@@ -206,7 +206,8 @@ def queue_tasks(filename, path_prefix='.', N=500, two_d=False, four_d=False):
     # Add tasks to queue
     tasks = queue.Queue()
 
-    loop_orders_2D = ['ijk', 'ikj', 'jik', 'jki', 'kij', 'kji']
+    if not loop_orders_2D:
+        loop_orders_2D = ['ijk', 'ikj', 'jik', 'jki', 'kij', 'kji']
     loop_orders_4D = [outer + inner for outer in ['ijd', 'idj', 'jid', 'jdi', 'dij', 'dji'] for inner in ['kle', 'kel', 'lke', 'lek', 'ekl', 'elk'] ]
 
     if two_d:
@@ -256,6 +257,7 @@ def main():
     parser.add_argument('-b', '--baseline', default=None)
     parser.add_argument('-2d', '--two-d', default=None)
     parser.add_argument('-4d', '--four-d', default=None)
+    parser.add_argument('-lo2d', '--loop-orders-2D', default=None) # loop order 2D
     
     args = vars(parser.parse_args())
 
@@ -286,7 +288,7 @@ def main():
 
     else:
         for N in data['problem_size']:
-            tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'])
+            tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], lo2D=args['loop_orders_2D'])
 
             results = []
 
