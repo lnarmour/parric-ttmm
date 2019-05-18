@@ -257,7 +257,7 @@ def main():
     parser.add_argument('-b', '--baseline', default=None)
     parser.add_argument('-2d', '--two-d', default=None)
     parser.add_argument('-4d', '--four-d', default=None)
-    parser.add_argument('-lo2d', '--loop-orders-2D', default=None) # loop order 2D
+    parser.add_argument('-lo2d', '--loop-orders-2D', default=None, nargs='+') # loop order 2D
     
     args = vars(parser.parse_args())
 
