@@ -221,7 +221,11 @@ def queue_failed_tasks(results_files, path_prefix):
             else:
                 binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, x['permutation'])
 
-        tasks.put(Command(binary, [x['N'], x['TS'], x['TS'], x['TS']], num_threads=x['num_threads'], permutation=x['permutation'],
+        params = [x['N']]
+        if x['TS']:
+            params += [x['TS'], x['TS'], x['TS']]
+
+        tasks.put(Command(binary, params, num_threads=x['num_threads'], permutation=x['permutation'],
                 loop_parallelized=x['loop_parallelized']))
 
     return tasks
