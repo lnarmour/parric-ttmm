@@ -337,7 +337,7 @@ def main():
             else:
                 tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], loop_orders_2D=args['loop_orders_2D'])
 
-            total_tasks = len(tasks)
+            print('Queued {} tasks.'.format(tasks.qsize()))
             results = []
 
             if os.getenv("COLLECT"):
