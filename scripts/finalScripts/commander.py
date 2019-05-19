@@ -28,7 +28,7 @@ class Machine:
 
 
 class Command:
-    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None, loop_parallelized=None, mkl=False, block_size=None, blocks_per_side=None):
+    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None, loop_parallelized=None, mkl=False, block_size=None, blocks_per_side=None, data_layout=None, mkl_interior=None):
         global total_tasks
         self.executable = executable
         self.executable_short_name = executable.split('/')[-1]
@@ -45,6 +45,8 @@ class Command:
         self.num_threads = num_threads
         self.permutation = permutation
         self.mkl = mkl
+        self.mkl_interior = mkl_interior
+        self.data_layout = data_layout
         self.task_number = total_tasks
         total_tasks += 1
 
@@ -101,6 +103,8 @@ class Result:
         ret["task_number"] = self.command.task_number
         ret["permutation"] = self.command.permutation
         ret["N"] = self.command.N
+        ret["data_layout"] = self.command.data_layout
+        ret["mkl_interior"] = self.command.mkl_interior
         ret["tiled"] = self.command.tiled
         ret["TS"] = self.command.TS
         ret["blocks_per_side"] = self.command.blocks_per_side
@@ -121,6 +125,8 @@ class Result:
         ret += '  host: {}\n'.format(self.machine)
         ret += '  permutation: {}\n'.format(self.command.permutation)
         ret += '  N: {}\n'.format(self.command.N)
+        ret += '  data_layout: {}\n'.format(self.command.data_layout)
+        ret += '  mkl_interior: {}\n'.format(self.command.mkl_interior)
         ret += '  tiled: {}\n'.format(self.command.tiled)
         ret += '  TS: {}\n'.format(self.command.TS)
         ret += '  blocks_per_side: {}\n'.format(self.command.blocks_per_side)
