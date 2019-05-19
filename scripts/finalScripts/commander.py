@@ -286,7 +286,6 @@ def main():
     global job_cnt
     global total_tasks
     job_cnt = 0
-    total_tasks = 0
 
     '''Command line options processing.'''
     program_name = os.path.basename(sys.argv[0])
@@ -331,13 +330,21 @@ def main():
             json.dump(all_results, outfile, indent=2)
 
     else:
+
+        # calculate total number of tasks to print to screen
+        cnt = 0
+        total_tasks = 0
+        for N in data['problem_size']:
+            tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], loop_orders_2D=args['loop_orders_2D'])
+            cnt += tasks.qsize()
+        print('Number of tasks to run: {}'.format(total_tasks))
+        total_tasks = 0
         for N in data['problem_size']:
             if args['failed_tasks']:
                 tasks = queue_failed_tasks(args['failed_tasks'], args['path_prefix'])
             else:
                 tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], loop_orders_2D=args['loop_orders_2D'])
 
-            print('Queued {} tasks.'.format(total_tasks))
             results = []
 
             if os.getenv("COLLECT"):
