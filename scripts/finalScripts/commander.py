@@ -33,7 +33,10 @@ class Command:
         self.executable = executable
         self.executable_short_name = executable.split('/')[-1]
         self.params = params
-        self.N = params[0]
+        if data_layout == '2D':
+            self.N = params[0]
+        else:
+            self.N = block_size * blocks_per_side
         # TODO - will need to adjust this for 4D layouts
         self.TS = params[1] if len(params)==4 else None
         self.blocks_per_side= blocks_per_side
