@@ -28,7 +28,7 @@ class Machine:
 
 
 class Command:
-    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None, loop_parallelized=None, mkl=False, block_size=None, blocks_per_side=None, data_layout=None, mkl_interior=None):
+    def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None, loop_parallelized=None, mkl=False, block_size=None, blocks_per_side=None, data_layout=None, mkl_interior=False):
         global total_tasks
         self.executable = executable
         self.executable_short_name = executable.split('/')[-1]
