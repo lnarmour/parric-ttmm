@@ -14,6 +14,7 @@ global tasks
 global gflops
 
 global job_cnt
+global total_tasks
 
 class Machine:
     def __init__(self, hostname, dns_suffix=None):
@@ -28,6 +29,7 @@ class Machine:
 
 class Command:
     def __init__(self, executable, params, num_runs=7, num_threads=None, permutation=None, loop_parallelized=None, mkl=False, block_size=None, blocks_per_side=None):
+        global total_tasks
         self.executable = executable
         self.executable_short_name = executable.split('/')[-1]
         self.params = params
@@ -43,6 +45,8 @@ class Command:
         self.num_threads = num_threads
         self.permutation = permutation
         self.mkl = mkl
+        self.task_number = total_tasks
+        total_tasks += 1
 
     def __str__(self):
         p_str = ''
@@ -94,6 +98,7 @@ class Result:
         ret = {}
         ret["machine"] = str(self.machine)
         ret["command"] = str(self.command)
+        ret["task_number"] = self.command.task_number
         ret["permutation"] = self.command.permutation
         ret["N"] = self.command.N
         ret["tiled"] = self.command.tiled
@@ -112,6 +117,7 @@ class Result:
         ret = 'Result\n'
         ret += '  machine: {}\n'.format(self.machine)
         ret += '  command: {}\n'.format(self.command)
+        ret += '  task_number: {}\n'.format(self.command.task_number)
         ret += '  host: {}\n'.format(self.machine)
         ret += '  permutation: {}\n'.format(self.command.permutation)
         ret += '  N: {}\n'.format(self.command.N)
@@ -278,6 +284,7 @@ def queue_tasks(filename, path_prefix='.', N=500, two_d=False, four_d=False, loo
 
 def main():
     global job_cnt
+    global total_tasks
     job_cnt = 0
 
     '''Command line options processing.'''
@@ -329,6 +336,7 @@ def main():
             else:
                 tasks = queue_tasks(args['config_file'], args['path_prefix'], N, two_d=args['two_d'], four_d=args['four_d'], loop_orders_2D=args['loop_orders_2D'])
 
+            total_tasks = len(tasks)
             results = []
 
             if os.getenv("COLLECT"):
