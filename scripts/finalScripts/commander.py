@@ -163,7 +163,7 @@ def worker(machine, tasks, results):
             times = [float(s.split(' ')[3]) for s in arr]
             result = Result(machine, command, times)
         except:
-            result = Result(machine, command, None, error=True, error_msg=result_bytes)
+            result = Result(machine, command, None, error=True, error_msg=result_bytes.decode('UTF-8'))
         finally:
             tasks.task_done()
             results.append(result)
