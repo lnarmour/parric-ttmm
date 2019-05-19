@@ -286,6 +286,7 @@ def main():
     global job_cnt
     global total_tasks
     job_cnt = 0
+    total_tasks = 0
 
     '''Command line options processing.'''
     program_name = os.path.basename(sys.argv[0])
