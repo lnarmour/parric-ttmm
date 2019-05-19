@@ -284,7 +284,7 @@ def queue_tasks(filename, path_prefix='.', N=500):
         # d -> reduction on i,j
         # e -> reduction on k,l
 
-        if not data['omp_num_threads']:
+        if 'omp_num_threads' not in data:
             # sequential only
             for permutation in data['permutations']:
                 binary = '{}/4D-Sequential/tiled/{}/out/BlockTTMM'.format(path_prefix, permutation)
