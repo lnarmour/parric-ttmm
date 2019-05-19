@@ -27,12 +27,52 @@
     "wahoo"
   ],
   "problem_size": [
-    500
+    1000,
+    2000
   ],
   "tile_size": [
     8,
     16,
     32
+  ],
+  "data_layout": "4D",
+  "permutations": [
+    "ijdkle",
+    "ijdkel",
+    "ijdlke",
+    "ijdlek",
+    "ijdekl",
+    "ijdelk",
+    "idjkle",
+    "idjkel",
+    "idjlke",
+    "idjlek",
+    "idjekl",
+    "idjelk",
+    "jidkle",
+    "jidkel",
+    "jidlke",
+    "jidlek",
+    "jidekl",
+    "jidelk",
+    "jdikle",
+    "jdikel",
+    "jdilke",
+    "jdilek",
+    "jdiekl",
+    "jdielk",
+    "dijkle",
+    "dijkel",
+    "dijlke",
+    "dijlek",
+    "dijekl",
+    "dijelk",
+    "djikle",
+    "djikel",
+    "djilke",
+    "djilek",
+    "djiekl",
+    "djielk"
   ],
   "omp_num_threads": [2,4,6,8,10,12]
 }
