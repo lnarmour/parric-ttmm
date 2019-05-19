@@ -238,7 +238,7 @@ def queue_failed_tasks(results_files, path_prefix):
 
 
 #def queue_tasks(filename, path_prefix='.', N=500, two_d=False, four_d=False, loop_orders_2D=None):
-def queue_tasks(filename, path_prefix='.', N=500, data_layout=None, permutations=None):
+def queue_tasks(filename, path_prefix='.', N=500):
     global hostnames
 
     with open(filename) as f:
@@ -247,8 +247,8 @@ def queue_tasks(filename, path_prefix='.', N=500, data_layout=None, permutations
     # Add tasks to queue
     tasks = queue.Queue()
 
-    if data_layout == '2D':
-        for permutation in permutations:
+    if data['data_layout'] == '2D':
+        for permutation in data['permutations']:
             binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
             tasks.put(Command(binary, [N], permutation=permutation))
 
@@ -268,22 +268,30 @@ def queue_tasks(filename, path_prefix='.', N=500, data_layout=None, permutations
                     tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
                     tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
 
-    if data_layout == '4D':
+    if data['data_layout'] == '4D':
         # i,j,k,l, d,e
         # i,j -> coordinates of block
         # k,l -> coordinates of point within a block
         # d -> reduction on i,j
         # e -> reduction on k,l
 
-        for permutation in permutations:
+        for permutation in data['permutations']:
             binary = '{}/4D-Sequential/tiled/{}/out/BlockTTMM'.format(path_prefix, permutation)
 
             for TS in data['tile_size']:
                 if N < TS:
                     continue
-                tasks.put(Command(binary, [N//TS, TS], permutation=permutation, blocks_per_side=N//TS, block_size=TS))
-                
-        
+                tasks.put(Command(binary, [N // TS, TS], permutation=permutation, blocks_per_side=N // TS, block_size=TS))
+
+        for mkl_perm in data['mkl_interior_permutations']:
+            binary = '{}/4D-Sequential/mklInterior/{}icc/BlockTTMM'.format(path_prefix, mkl_perm)
+
+            for TS in data['tile_size']:
+                if N < TS:
+                    continue
+                tasks.put(Command(binary, [N // TS, TS], permutation=mkl_perm, blocks_per_side=N // TS, block_size=TS))
+
+
     return tasks
 
 def main():
@@ -300,9 +308,6 @@ def main():
     parser.add_argument('-f', '--config-file', default=None)
     parser.add_argument('-o', '--out-file', default='./results.json')
     parser.add_argument('-b', '--baseline', default=None)
-    parser.add_argument('-2d', '--two-d', default=None)
-    parser.add_argument('-4d', '--four-d', default=None)
-    parser.add_argument('-lo2d', '--loop-orders-2D', default=None, nargs='+') # loop order 2D
     parser.add_argument('-ffailed', '--failed-tasks', default=None)
     
     args = vars(parser.parse_args())
@@ -339,7 +344,7 @@ def main():
         cnt = 0
         total_tasks = 0
         for N in data['problem_size']:
-            tasks = queue_tasks(args['config_file'], args['path_prefix'], N, data_layout=data['data_layout'], permutations=data['permutations'])
+            tasks = queue_tasks(args['config_file'], args['path_prefix'], N)
             cnt += tasks.qsize()
         print('Number of tasks to run: {}'.format(total_tasks))
         total_tasks = 0
@@ -351,7 +356,7 @@ def main():
             if args['failed_tasks']:
                 tasks = queue_failed_tasks(args['failed_tasks'], args['path_prefix'])
             else:
-                tasks = queue_tasks(args['config_file'], args['path_prefix'], N, data_layout=data['data_layout'], permutations=data['permutations'])
+                tasks = queue_tasks(args['config_file'], args['path_prefix'], N)
 
             results = []
 
