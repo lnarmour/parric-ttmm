@@ -256,23 +256,23 @@ def queue_tasks(filename, path_prefix='.', N=500):
     if data['data_layout'] == '2D':
         for permutation in data['permutations']:
             binary = '{}/2D-Sequential/nonTiled/{}/out/TMM'.format(path_prefix, permutation)
-            tasks.put(Command(binary, [N], permutation=permutation))
+            tasks.put(Command(binary, [N], permutation=permutation, data_layout='2D'))
 
             for num_threads in data['omp_num_threads']:
                 binaryI = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
                 binaryJ = '{}/2D-Parallel/nonTiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
-                tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
-                tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
+                tasks.put(Command(binaryI, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='I', data_layout='2D'))
+                tasks.put(Command(binaryJ, [N], num_threads=num_threads, permutation=permutation, loop_parallelized='J', data_layout='2D'))
 
             for TS in data['tile_size']:
                 binary = '{}/2D-Sequential/tiled/{}/out/TMM'.format(path_prefix, permutation)
-                tasks.put(Command(binary, [N, TS, TS, TS], permutation=permutation))
+                tasks.put(Command(binary, [N, TS, TS, TS], permutation=permutation, data_layout='2D'))
 
                 for num_threads in data['omp_num_threads']:
                     binaryI = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_I'.format(path_prefix, permutation)
                     binaryJ = '{}/2D-Parallel/tiled/{}/out/TMM_parallel_J'.format(path_prefix, permutation)
-                    tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='I'))
-                    tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='J'))
+                    tasks.put(Command(binaryI, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='I', data_layout='2D'))
+                    tasks.put(Command(binaryJ, [N, TS, TS, TS], num_threads=num_threads, permutation=permutation, loop_parallelized='J', data_layout='2D'))
 
     if data['data_layout'] == '4D':
         # i,j,k,l, d,e
@@ -287,7 +287,7 @@ def queue_tasks(filename, path_prefix='.', N=500):
             for TS in data['tile_size']:
                 if N < TS:
                     continue
-                tasks.put(Command(binary, [N // TS, TS], permutation=permutation, blocks_per_side=N // TS, block_size=TS))
+                tasks.put(Command(binary, [N // TS, TS], permutation=permutation, blocks_per_side=N // TS, block_size=TS, data_layout='4D'))
 
         for mkl_perm in data['mkl_interior_permutations']:
             binary = '{}/4D-Sequential/mklInterior/{}icc/BlockTTMM'.format(path_prefix, mkl_perm)
@@ -295,7 +295,7 @@ def queue_tasks(filename, path_prefix='.', N=500):
             for TS in data['tile_size']:
                 if N < TS:
                     continue
-                tasks.put(Command(binary, [N // TS, TS], permutation=mkl_perm, blocks_per_side=N // TS, block_size=TS))
+                tasks.put(Command(binary, [N // TS, TS], permutation=mkl_perm, blocks_per_side=N // TS, block_size=TS, data_layout='4D', mkl_interior=True))
 
 
     return tasks
