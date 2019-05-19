@@ -16,7 +16,7 @@ do
     mv BlockTTMM.check BlockTTMM_parallel_J.check
     make clean &> /dev/null;
     printf "done.\n";
-    
+
     cd ../../;
 done;
 

@@ -284,22 +284,39 @@ def queue_tasks(filename, path_prefix='.', N=500):
         # d -> reduction on i,j
         # e -> reduction on k,l
 
-        for permutation in data['permutations']:
-            binary = '{}/4D-Sequential/tiled/{}/out/BlockTTMM'.format(path_prefix, permutation)
+        if not data['omp_num_threads']:
+            # sequential only
+            for permutation in data['permutations']:
+                binary = '{}/4D-Sequential/tiled/{}/out/BlockTTMM'.format(path_prefix, permutation)
 
-            for TS in data['tile_size']:
-                if N < TS:
-                    continue
-                tasks.put(Command(binary, [N // TS, TS], permutation=permutation, blocks_per_side=N // TS, block_size=TS, data_layout='4D'))
+                for TS in data['tile_size']:
+                    if N < TS:
+                        continue
+                    tasks.put(Command(binary, [N // TS, TS], permutation=permutation, blocks_per_side=N // TS, block_size=TS, data_layout='4D'))
 
-        for mkl_perm in data['mkl_interior_permutations']:
-            binary = '{}/4D-Sequential/mklInterior/{}icc/BlockTTMM'.format(path_prefix, mkl_perm)
+            for mkl_perm in data['mkl_interior_permutations']:
+                binary = '{}/4D-Sequential/mklInterior/{}icc/BlockTTMM'.format(path_prefix, mkl_perm)
 
-            for TS in data['tile_size']:
-                if N < TS:
-                    continue
-                tasks.put(Command(binary, [N // TS, TS], permutation=mkl_perm, blocks_per_side=N // TS, block_size=TS, data_layout='4D', mkl_interior=True))
+                for TS in data['tile_size']:
+                    if N < TS:
+                        continue
+                    tasks.put(Command(binary, [N // TS, TS], permutation=mkl_perm, blocks_per_side=N // TS, block_size=TS, data_layout='4D', mkl_interior=True))
+        else:
+            # parallel with mkl interior
+            for mkl_perm in data['mkl_interior_permutations']:
+                binaryI = '{}/4D-Parallel/mklInterior/{}icc/BlockTTMM_parallel_I'.format(path_prefix, mkl_perm)
+                binaryJ = '{}/4D-Parallel/mklInterior/{}icc/BlockTTMM_parallel_J'.format(path_prefix, mkl_perm)
 
+                for num_threads in data['omp_num_threads']:
+                    for TS in data['tile_size']:
+                        if N < TS:
+                            continue
+                        tasks.put(Command(binaryI, [N // TS, TS], num_threads=num_threads, loop_parallelized='I',
+                                          permutation=mkl_perm, blocks_per_side=N // TS, block_size=TS,
+                                          data_layout='4D', mkl_interior=True))
+                        tasks.put(Command(binaryJ, [N // TS, TS], num_threads=num_threads, loop_parallelized='J',
+                                          permutation=mkl_perm, blocks_per_side=N // TS, block_size=TS,
+                                          data_layout='4D', mkl_interior=True))
 
     return tasks
 
@@ -357,9 +374,6 @@ def main():
             cnt += tasks.qsize()
         print('Number of tasks to run: {}'.format(total_tasks))
         total_tasks = 0
-
-        two_d = True if data['data_layout'] == '2D' else False
-        four_d = not two_d
 
         for N in data['problem_size']:
             if args['failed_tasks']:
