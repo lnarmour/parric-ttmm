@@ -57,14 +57,7 @@
     2048
   ],
   "data_layout": "4D",
-  "mkl_interior_permutations": [
-    "ijd",
-    "idj",
-    "jid",
-    "jdi",
-    "dij",
-    "dji"
-  ],
+  "mkl_interior_permutations": [],
   "permutations": [
     "ijdekl",
     "ijdkel",

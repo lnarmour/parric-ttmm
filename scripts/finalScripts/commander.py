@@ -317,6 +317,20 @@ def queue_tasks(filename, path_prefix='.', N=500):
                         tasks.put(Command(binaryJ, [N // TS, TS], num_threads=num_threads, loop_parallelized='J',
                                           permutation=mkl_perm, blocks_per_side=N // TS, block_size=TS,
                                           data_layout='4D', mkl_interior=True))
+            for perm in data['permutations']:
+                binaryI = '{}/4D-Parallel/tiled/{}/out/BlockTTMM_parallel_I'.format(path_prefix, perm)
+                binaryJ = '{}/4D-Parallel/tiled/{}/out/BlockTTMM_parallel_J'.format(path_prefix, perm)
+
+                for num_threads in data['omp_num_threads']:
+                    for TS in data['tile_size']:
+                        if N < TS:
+                            continue
+                        tasks.put(Command(binaryI, [N // TS, TS], num_threads=num_threads, loop_parallelized='I',
+                                          permutation=perm, blocks_per_side=N // TS, block_size=TS,
+                                          data_layout='4D', mkl_interior=True))
+                        tasks.put(Command(binaryJ, [N // TS, TS], num_threads=num_threads, loop_parallelized='J',
+                                          permutation=perm, blocks_per_side=N // TS, block_size=TS,
+                                          data_layout='4D', mkl_interior=True))
 
     return tasks
 

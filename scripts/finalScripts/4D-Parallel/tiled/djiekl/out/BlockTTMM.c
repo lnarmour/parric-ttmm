@@ -127,7 +127,8 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 		//{i,j,k,l,d,e|k>=0 && i>=k && n>=i+1 && d>=0 && b>=d+1 && l>=0 && b>=l+1 && n>=1 && b>=1 && i>=0 && j>=i && n>=j+1 && b>=e+1 && e>=0 && j>=k}
 		int c1,c2,c3,c4,c5,c6;
 		if ((b >= 2 && n >= 2)) {
-			{#ifdef PARALLEL_I
+			{
+			#ifdef PARALLEL_I
             #pragma omp parallel for
             #endif
 				for(c5=0;c5 <= b-1;c5+=1)

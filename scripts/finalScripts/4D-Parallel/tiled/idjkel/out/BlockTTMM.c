@@ -165,7 +165,8 @@ void BlockTTMM(long n, long b, float**** A, float**** B, float**** C){
 				 	 	for(c4=0;c4 <= b-1;c4+=1)
 				 	 	 {
 				 	 	 	for(c5=0;c5 <= b-1;c5+=1)
-				 	 	 	 {#ifdef PARALLEL_J
+				 	 	 	 {
+				 	 	 	 #ifdef PARALLEL_J
             #pragma omp parallel for
             #endif
 				 	 	 	 	for(c6=0;c6 <= b-1;c6+=1)
